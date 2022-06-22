@@ -76,7 +76,7 @@ function createNewSheetOnSubmit(e) {
       const sheet = ss.getActiveSheet()
 
       //add the query formula to cell A2, with parameters set to that teacher
-      sheet.getRange('A2').setFormula(`=query('Form Responses'!A2:K, "select A, B, C, G, H, K where D='${cell.getValue()}' or E='${cell.getValue()}' or F='${cell.getValue()}'")`)
+      sheet.getRange('A2').setFormula(`=query('Form Responses'!A2:K, "select A, B, C, G, H, J where D='${cell.getValue()}' or E='${cell.getValue()}' or F='${cell.getValue()}'")`)
     
       // Protect the active sheet except for columns G and H.
       const protection = sheet.protect().setDescription('Teachers: Edit only G:H');
@@ -100,19 +100,16 @@ function createNewSheetOnSubmit(e) {
 
 
 function addUuidAndCheckbox(e) {
-  //For each form submission, add universal unique id to column K (11) of 'Form Responses' sheet, and add checkbox to column L (12)
+  //For each form submission, add universal unique id to column J (10) of 'Form Responses' sheet, and add checkbox to column K (11)
 
   const row = e.range.getRow();
 
-  //Generate a universal unique id (Uuid) for the response in column K (11) of 'Form Responses'
+  //Generate a universal unique id (Uuid) for the response in column J (10) of 'Form Responses'
   const responseSheet = e.range.getSheet();
-  responseSheet.getRange(row, 11).setValue(Utilities.getUuid())
-
-  //Add checkbox to column L (12) of that row
-  // responseSheet.getRange(row, 12).insertCheckboxes()
+  responseSheet.getRange(row, 10).setValue(Utilities.getUuid())
 
   const rule = SpreadsheetApp.newDataValidation().requireCheckbox().setAllowInvalid(false).setHelpText('Please click the cell to check or uncheck the box.').build();
-  responseSheet.getRange(row, 12).setDataValidation(rule);
+  responseSheet.getRange(row, 11).setDataValidation(rule);
 }
 
 
@@ -145,7 +142,7 @@ function markCompletion(e) {
 
   //get array of response Uuids in 'Form Responses' sheet
   const lastRow = formResponsesSheet.getLastRow();  //get the number of the last row with content
-  const responseUuidArray = formResponsesSheet.getRange(1, 11, lastRow).getValues()
+  const responseUuidArray = formResponsesSheet.getRange(1, 10, lastRow).getValues()
 
   //find the index of the response Uuid that matches the Uuid of the response checked off on the edited tab; add 1 to get the row number of that response (arrays are zero-indexed; ranges are not)
   const responseRow = responseUuidArray.findIndex(id => id[0] === checkedUuid) + 1
@@ -174,7 +171,7 @@ function markCompletion(e) {
 }
 
 function queueCompletionEmail(e) {
-  // When Brian checks a box in the 'Ready to send email'? column (L) in 'Form Responses,' save information about that recommendation entry, to queue for the sendQueuedCompletionEmails() function
+  // When Brian checks a box in the 'Ready to send email'? column (K) in 'Form Responses,' save information about that recommendation entry, to queue for the sendQueuedCompletionEmails() function
   // This function runs EVERY TIME the spreadsheet is edited by a user, but checks where the edit was made before doing anything 
   // What if you check a bunch of boxes very quickly, before the previous function call has finished? Need to test and account for this
 
@@ -183,7 +180,7 @@ function queueCompletionEmail(e) {
   const range = e.range   //the cell that was edited  
 
   //if the edit is not in the 'Form Responses' sheet and not in column L, end the function
-  if (sheet.getName() !== 'Form Responses' && range.getColumn() !== 12) { 
+  if (sheet.getName() !== 'Form Responses' && range.getColumn() !== 11) { 
     Logger.log('outside range')
     return 
   } 
@@ -215,7 +212,7 @@ function queueCompletionEmail(e) {
   
     const emailInfo = {
       responseRow: responseRow,
-      parentEmail: sheet.getRange(responseRow, 10).getValue(),
+      parentEmail: '',
       studentName: sheet.getRange(responseRow, 2).getValue(),
       school: sheet.getRange(responseRow, 3).getValue()
     } 
@@ -300,3 +297,4 @@ function showAdminSidebar() {
   sidebar.setTitle('Admin Controls')
   SpreadsheetApp.getUi().showSidebar(sidebar);
 }
+
