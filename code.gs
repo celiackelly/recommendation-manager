@@ -265,25 +265,10 @@ function resetQueuedEmailInfo() {
 }
 
 
-//PROBLEM- I can't restrict access to this sidebar, can I? So anyone could send emails from here if they have domain edit access on the spreadsheet as a whole?
-//Maybe just display the queued emails in the sidebar, but still trigger them from the button on the speadsheet (so only Brian and I can trigger)
-// function onOpen() {
-//   SpreadsheetApp
-//     .getUi()
-//     .createMenu('Admin Controls')
-//     .addItem('Admin Controls', 'showAdminSidebar')
-//     .addToUi();
-// }
-
-// function showAdminSidebar() {
-//   const sidebar = HtmlService.createHtmlOutputFromFile('sidebar.html');
-//   sidebar.setTitle('Admin Controls')
-//   SpreadsheetApp.getUi().showSidebar(sidebar);
-// }
-
-
-
-//Test of serving templated HTML
+//When the spreadsheet is opened, create a menu button to open the 'Admin Controls' sidebar
+//Add an event listener, so that when the 'Admin Controls' button in the menu is clicked, the sidebar is shown
+      //PROBLEM- I can't restrict access to this sidebar, can I? So anyone could send emails from here if they have domain edit access on the spreadsheet as a whole?
+      //Maybe just display the queued emails in the sidebar, but still trigger them from the button on the speadsheet (so only Brian and I can trigger)
 function onOpen() {
   SpreadsheetApp
     .getUi()
@@ -292,12 +277,21 @@ function onOpen() {
     .addToUi();
 }
 
+//Render the HTML for the sidebar from the 'sidebar.html' template
 function doGet() {
   const sidebar = HtmlService.createTemplateFromFile('sidebar.html')
-
   return sidebar.evaluate();
 }
 
+//Define an include() function, which lets you include another file in the HTML template
+//This function is called in the <head> of sidebar.html, to include the 'style.html' file when the HTML is rendered
+//Separation of concerns in Google Apps Script: https://developers.google.com/apps-script/guides/html/best-practices#code.gs
+function include(filename) {
+  return HtmlService.createHtmlOutputFromFile(filename)
+      .getContent();
+}
+
+//When the 'Admin Controls' button in the menu is clicked, show the sidebar
 function showAdminSidebar() {
   const sidebar = doGet();
   sidebar.setTitle('Admin Controls')
