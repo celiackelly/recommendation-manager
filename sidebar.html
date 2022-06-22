@@ -6,23 +6,51 @@
       Google recommends using this CSS package, but I don't like what it did to the h1...
       https://developers.google.com/apps-script/add-ons/guides/css
      -->
-    <!-- <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css"> -->
+    <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+    <?!= include('style'); ?>
   </head>
   <body>
-    <h1>Admin Controls</h1>
+    <main>
+      <section>
+        <h1>Admin Controls</h1>
 
-    <? let queuedEmailInfo = JSON.parse(PropertiesService.getDocumentProperties().getProperty('queuedEmailInfo')) ?>
+        <h2>Queued Emails</h2>
 
-    <table>
-      <? for (let i = 0; i < queuedEmailInfo.length; i++) { ?>
-        <tr>
-            <td><?= queuedEmailInfo[i].responseRow ?></td>
-            <td><?= queuedEmailInfo[i].parentEmails ?></td>
-            <td><?= queuedEmailInfo[i].studentName ?></td>
-            <td><?= queuedEmailInfo[i].school ?></td>
-        </tr>
-      <? } ?>
-    </table>
-    
+        <? let queuedEmailInfo = JSON.parse(PropertiesService.getDocumentProperties().getProperty('queuedEmailInfo')) || [] ?>
+
+        <? for (let i = 0; i < queuedEmailInfo.length; i++) { ?>
+          <table>
+            <tr>
+              <th>Row</th>
+              <td><?= queuedEmailInfo[i].responseRow ?></td>
+            </tr>
+            <tr>
+              <th>Name</th>
+              <td><?= queuedEmailInfo[i].studentName ?></td>
+            </tr>
+            <tr>
+              <th>School</th>
+              <td><?= queuedEmailInfo[i].school ?></td>
+            </tr>
+            <tr>
+              <th>Parent Emails</th>
+              <td><?= queuedEmailInfo[i].parentEmails ?></td>
+            </tr>
+          </table>
+        <? } ?>
+
+
+        <!-- <table>
+          <? for (let i = 0; i < queuedEmailInfo.length; i++) { ?>
+            <tr>
+                <td><?= queuedEmailInfo[i].responseRow ?></td>
+                <td><?= queuedEmailInfo[i].parentEmails ?></td>
+                <td><?= queuedEmailInfo[i].studentName ?></td>
+                <td><?= queuedEmailInfo[i].school ?></td>
+            </tr>
+          <? } ?>
+        </table> -->
+      </section>
+    </main>
   </body>
 </html>
