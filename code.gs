@@ -210,12 +210,18 @@ function queueCompletionEmail(e) {
   } else {
     Logger.log('"Ready to send" box checked')
   
+        const addressBook = ss.getSheetByName('Address Book')
+    const studentName = sheet.getRange(responseRow, 2).getValue()
+
+    const addressBookNames = addressBook.getRange(1, 1, 1, addressBook.getLastRow()).getValues()
+    const studentRowInAddressBook = addressBookNames.findIndex(name => name === studentName) + 3
+  
     const emailInfo = {
       responseRow: responseRow,
-      parentEmail: '',
-      studentName: sheet.getRange(responseRow, 2).getValue(),
+      parentEmails: `${addressBook.getRange(studentRowInAddressBook, 2).getValue()}, ${addressBook.getRange(studentRowInAddressBook, 3).getValue()}`,
+      studentName: studentName,
       school: sheet.getRange(responseRow, 3).getValue()
-    } 
+    }
     queuedEmailInfo.push(emailInfo)
   }
 
@@ -240,7 +246,7 @@ function sendQueuedCompletionEmails() {
   //for each emailInfo object in the array/queue, send an email 
   queuedEmailInfo.forEach(emailInfo => {
       MailApp.sendEmail({
-        to: emailInfo.parentEmail,
+        to: emailInfo.parentEmails,
         replyTo: 'bschrembs@nysmith.com',   //Emails will be sent from Celia's account, but if parents reply, the replies will default to Brian
         subject: `Completed Recommendation for ${emailInfo.studentName}`,
         body: `All the recommendations for ${emailInfo.studentName} for ${emailInfo.school} have been completed. Please contact Brian Schrembs with any questions.`
