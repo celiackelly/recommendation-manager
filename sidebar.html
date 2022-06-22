@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <!-- 
+      Google recommends using this CSS package, but I don't like what it did to the h1...
+      https://developers.google.com/apps-script/add-ons/guides/css
+     -->
+    <!-- <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css"> -->
+  </head>
+  <body>
+    <h1>Admin Controls</h1>
+
+    <? let queuedEmailInfo = JSON.parse(PropertiesService.getDocumentProperties().getProperty('queuedEmailInfo')) ?>
+
+    <table>
+      <? for (let i = 0; i < queuedEmailInfo.length; i++) { ?>
+        <tr>
+            <td><?= queuedEmailInfo[i].responseRow ?></td>
+            <td><?= queuedEmailInfo[i].parentEmail ?></td>
+            <td><?= queuedEmailInfo[i].studentName ?></td>
+            <td><?= queuedEmailInfo[i].school ?></td>
+        </tr>
+      <? } ?>
+    </table>
+    
+  </body>
+</html>
