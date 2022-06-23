@@ -1,10 +1,5 @@
-# recommendation-manager
-A Google Sheets add-on to manage student recommendations and send automated completion emails. Built for a specific school and Workspace domain. 
-
-# My Awesome Project
-Write a short sentence or two about this project and what it does. Be sure to include a link and a screenshot (we're front end devs so we can actually see our work!).
-
-**Link to project:** http://recruiters-love-seeing-live-demos.com/
+# Recommendation Manager
+An add-on built in Google Apps Script to manage student recommendation requests and send automated completion emails.
 
 ![Screenshot of Recommendation Manager](https://github.com/celiackelly/recommendation-manager/blob/1958cc6ed8a11d076026f383f6b71235c849b1ab/recommendation-manager-cover.png)
 
