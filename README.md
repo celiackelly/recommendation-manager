@@ -27,15 +27,18 @@ The `installableTriggers.gs` file programmatically creates triggers to execute c
 
 The custom sidebar is coded using templated HTML and CSS. When the sidebar is opened, it gets the queuedEmailInfo property from the Properties Service, parses it, and dynamically creates a table to display the information for each email. In this way, the user can verify that the information is correct before clicking the "send emails" button. 
 
-## Optimizations:
-
-
 ## Lessons Learned:
 
-Setting permissions and protected ranges for the new tabs
+I spent hours reading the Google Apps Script documentation while developing this add-on. I learned how to do a number of things programmatically that I had only ever done through the UI, including how to generate a new sheet from a template, set data validation rules, and build installable triggers. A big win was when I realized that the new tabs my program was generating did not have the same protections as the template, and I had to figure out how to set protected ranges and user permissions programmatically. 
 
+The biggest challenge I encountered was figuring out how to send queued emails from the spreadsheet UI. My original plan was to trigger
 Properties Service and the weirdness of global variables in Apps Script 
 
-Sidebar 
+This was also my first time serving templated HTML within Google Sheets to create a custom sidebar, which opens up an exciting world of possibilities for building other custom add-ons for Google products. 
+
+## Optimizations: 
+
+Since there is no way to add an event listener to a specific range in Goole Apps Script, the markCompletion() and queueEmailCompletion() functions have to run each time the spreadsheet is edited, which is not ideal for performance. To optimize the speed of these functions, a conditional first checks whether the edit was in the the "Date Completed" or "Ready to Send?" columns; if not in that range, the function immediately returns. 
 
 ## Next Steps:
+
