@@ -31,8 +31,7 @@ The custom sidebar is coded using templated HTML and CSS. When the sidebar is op
 
 I spent hours reading the Google Apps Script documentation while developing this add-on. I learned how to do a number of things programmatically that I had only ever done through the UI, including how to generate a new sheet from a template, set data validation rules, and build installable triggers. A big win was when I realized that the new tabs my program was generating did not have the same protections as the template, and I had to figure out how to set protected ranges and user permissions programmatically. 
 
-The biggest challenge I encountered was figuring out how to send queued emails from the spreadsheet UI. My original plan was to trigger
-Properties Service and the weirdness of global variables in Apps Script 
+The biggest challenge I encountered was figuring out how to enable my users to send emails from the spreadsheet UI. My original plan was for the user to check a box next to the entry in the sheet, which would trigger an email, but Google does not allow access to the MailApp in functions that run on edit. I also discovered that global variables do not work the same way in Google Apps Script as they do in JavaScript and cannot store data (like an array of queued emails) such that multiple functions can access and update that data. In the end, I had to use the Properties Service to store the queued emails and a button in the UI to trigger sending them. 
 
 This was also my first time serving templated HTML within Google Sheets to create a custom sidebar, which opens up an exciting world of possibilities for building other custom add-ons for Google products. 
 
@@ -40,5 +39,8 @@ This was also my first time serving templated HTML within Google Sheets to creat
 
 Since there is no way to add an event listener to a specific range in Goole Apps Script, the markCompletion() and queueEmailCompletion() functions have to run each time the spreadsheet is edited, which is not ideal for performance. To optimize the speed of these functions, a conditional first checks whether the edit was in the the "Date Completed" or "Ready to Send?" columns; if not in that range, the function immediately returns. 
 
+I took great care to document my code thoroughly, to make this project easier for the organization to maintain. 
+
 ## Next Steps:
 
+I plan to refactor the process of queuing emails and storing them in the Properties Service to make these functions faster and more performant. I also hope to write a function to automate the initial set-up of the Google sheet, so that it is as easy as possible to create a new copy of the project at the beginning of each academic year. 
