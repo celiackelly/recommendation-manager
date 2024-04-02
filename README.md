@@ -1,5 +1,5 @@
 # Recommendation Manager
-Recommendation Manager is an add-on built in Google Apps Script to manage student recommendation requests and send automated completion emails. TEST
+Recommendation Manager is an add-on built in Google Apps Script to manage student recommendation requests and send automated completion emails. 
 
 The add-on was built for the school where I work, which had been manually managing all of these tasks. It significantly reduces the time and labor needed to track student recommendations, as well as the potential for human error.
 
