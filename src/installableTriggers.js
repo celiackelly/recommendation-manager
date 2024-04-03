@@ -64,7 +64,7 @@ function createNewSheetsOnSubmit(e) {
   // get the cell values for the teacher submissions from 'Form Responses 1' sheet
   const teacherCellValues = formResponsesSheet
     .getRange(
-      `${formResponses.columnLetters.mathTeacher}${newRow}:${formResponses.columnLetters.supplementalTeacher}${newRow}`,
+      `${formResponses.columnLetters.mathTeacher}${newRow}:${formResponses.columnLetters.supplementalTeacher}${newRow}`
     )
     .getValues()[0]; //[mathTeacherCell, laTeacherCell, supplementalTeacherCell]
 
@@ -149,7 +149,7 @@ function createNewSheetsOnSubmit(e) {
       requests.push(
         { addProtectedRange: { protectedRange: sheetProtection } },
         { addProtectedRange: { protectedRange: columnFGProtection } },
-        { updateCells: queryFormula },
+        { updateCells: queryFormula }
       );
     }
   });
@@ -188,21 +188,21 @@ function addUuidAndEmailCheckbox(e) {
   formResponsesSheet
     .getRange(newRow, formResponses.columnNumbers.primaryContactEmail)
     .setFormula(
-      `=iferror(query('Address Book'!A2:E, "SELECT C, E WHERE A='${studentName}' AND A IS NOT NULL", 0), "")`,
+      `=iferror(query('Address Book'!A2:E, "SELECT C, E WHERE A='${studentName}' AND A IS NOT NULL", 0), "")`
     );
 
   //get the cell ranges for each teacher submission
   const mathTeacherCell = formResponsesSheet.getRange(
     newRow,
-    formResponses.columnNumbers.mathTeacher,
+    formResponses.columnNumbers.mathTeacher
   );
   const laTeacherCell = formResponsesSheet.getRange(
     newRow,
-    formResponses.columnNumbers.laTeacher,
+    formResponses.columnNumbers.laTeacher
   );
   const supplementalTeacherCell = formResponsesSheet.getRange(
     newRow,
-    formResponses.columnNumbers.supplementalTeacher,
+    formResponses.columnNumbers.supplementalTeacher
   );
 
   //array of submitted teacher cells (ranges, not values)
@@ -263,7 +263,7 @@ function markCompletion(e) {
     responseRow,
     formResponses.columnNumbers.mathTeacher,
     1,
-    3,
+    3
   );
 
   //get an array of the values (teacher names) from columns D:F of the response row

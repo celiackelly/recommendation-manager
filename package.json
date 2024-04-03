@@ -4,7 +4,8 @@
   "description": "An add-on built in Google Apps Script to manage student recommendation requests and send automated completion emails. ",
   "main": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1", 
+    "format": "prettier --log-level warn --write \"src/**/*.{js,html}\""
   },
   "repository": {
     "type": "git",
@@ -19,5 +20,8 @@
     "recommendation"
   ],
   "author": "Celia Kelly",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "prettier": "3.2.5"
+  }
 }
