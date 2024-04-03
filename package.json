@@ -1,0 +1,23 @@
+{
+  "name": "recommendation-manager",
+  "version": "1.0.0",
+  "description": "An add-on built in Google Apps Script to manage student recommendation requests and send automated completion emails. ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/celiackelly/recommendation-manager"
+  },
+  "keywords": [
+    "school",
+    "education",
+    "Google",
+    "Apps",
+    "Script",
+    "recommendation"
+  ],
+  "author": "Celia Kelly",
+  "license": "MIT"
+}
