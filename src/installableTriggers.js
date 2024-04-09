@@ -252,14 +252,10 @@ function markCompletion(e) {
     return;
   }
 
-  //set background of this recommendation line on the teacher's sheet to green
-  const recommendationEntry = currentSheet.getRange(range.getRow(), 1, 1, 7);
-  recommendationEntry.setBackground("#d9ead3");
-
-  //get the universal unique id (Uuid) of the response (from column E, next to the date completed)
+  //get the universal unique id (Uuid) of the response (from column E of the teacher tab, next to the date completed)
   const checkedUuid = currentSheet.getRange(e.range.getRow(), 5).getValue();
 
-  //get name of sheet (tab) being edited - which teacher?
+  //get name of sheet (tab) being edited - which teacher completed the rec?
   const sheetName = currentSheet.getName();
 
   //get array of response Uuids in 'Form Responses 1' sheet
@@ -272,40 +268,27 @@ function markCompletion(e) {
   const responseRow =
     responseUuidArray.findIndex((id) => id[0] === checkedUuid) + 1;
 
-  const mathTeacherCell = formResponsesSheet.getRange(
-    responseRow,
-    formResponses.columnNumbers.mathTeacher
-  );
-  const laTeacherCell = formResponsesSheet.getRange(
-    responseRow,
-    formResponses.columnNumbers.laTeacher
-  );
-  const principalRecCell = formResponsesSheet.getRange(
-    responseRow,
-    formResponses.columnNumbers.principalRec
-  );
-
-  //get math teacher, la teacher, and principal rec cells from response row
-  const teacherNameCells = [mathTeacherCell, laTeacherCell, principalRecCell];
+  const recommendationsCells = formResponsesSheet.getRange(responseRow, formResponses.columnNumbers.mathTeacher, 1, 6)  //range of the 3 teacher cells and their completion checkoff columns (6 columns total)
 
   //get an array of the values (teacher names) from columns D:F of the response row
-  const teacherNameCellValues = teacherNameCells.getValues()[0]; //ex: [JoMarie Broccoli (jbroccoli@nysmith.com), Emily Stephens (estephens@nysmith.com), No Supplemental Recommendation Required]
+  const recommendationsCellsValues = recommendationsCells.getValues()[0]; //ex: [JoMarie Broccoli (jbroccoli@nysmith.com), Emily Stephens (estephens@nysmith.com), No Supplemental Recommendation Required]
 
-  //in teacherNameCellValues array, find the index of the teacher name that matches the edited tab; add 4 to get the correct column in 'Form Responses 1'
+  //in recommendationsCellsValues array, find the index of the teacher name that matches the edited tab; add 5 to get the correct column in 'Form Responses 1'
   //get this to throw an error and alert spreadsheet admins if not found? e.g. in case someone accidentally edited the tab names, which would break this function?
-  const responseColumn =
-    teacherNameCellValues.findIndex((entry) => entry.includes(sheetName)) + 4;
+  const responseColumn = recommendationsCellsValues.findIndex((entry) => typeof entry === 'string' && entry.includes(sheetName)) + 5;
 
   //get the cell in 'Form Responses 1' that corresponds to the completed recommendation
   const cellToFormat = formResponsesSheet.getRange(responseRow, responseColumn);
 
+  Logger.log(responseRow)
+  Logger.log(responseColumn)
+
   //if the date completed cell on the teacher sheet is filled out, change the background of the corresponding cell in 'Form Responses 1' to light green
   if (range.getValue()) {
-    cellToFormat.setBackground("#d9ead3");
+    cellToFormat.setValue(true);
   } else {
     //if date completed is deleted, reset background on 'Form Responses 1' page and teacher sheet
-    cellToFormat.setBackground(null);
-    recommendationEntry.setBackground(null);
+    cellToFormat.setValue(false);
   }
 }
 
