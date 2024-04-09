@@ -66,7 +66,7 @@ function createNewSheetsOnSubmit(e) {
     .getRange(
       `${formResponses.columnLetters.mathTeacher}${newRow}:${formResponses.columnLetters.principalRec}${newRow}`
     )
-    .getValues()[0]; //[mathTeacherCell, laTeacherCell, principalRecCell]
+    .getValues()[0].filter(el => el); //[mathTeacherCell, laTeacherCell, principalRecCell]
 
   //map teacherCellValues onto teacher names => 'jbroccoli'
   const teacherNames = teacherCellValues.map((value, i) => {
@@ -164,7 +164,7 @@ function createNewSheetsOnSubmit(e) {
   sortSheetsAlphabetically();
 }
 
-//this could be optimized with Sheets API
+//this could be optimized with Sheets API; and should be broken up and renamed
 function addUuidAndEmailCheckbox(e) {
   //For each form submission, add universal unique id, a checkbox for queuing emails, and query formula to the response row in 'Form Responses 1' sheet
   const newRow = e.range.getRow();
@@ -175,14 +175,29 @@ function addUuidAndEmailCheckbox(e) {
     .setValue(Utilities.getUuid());
 
   //add checkbox for queuing emails
-  const rule = SpreadsheetApp.newDataValidation()
+  const checkboxRule = SpreadsheetApp.newDataValidation()
     .requireCheckbox()
     .setAllowInvalid(false)
     .setHelpText("Please click the cell to check or uncheck the box.")
     .build();
+
   formResponsesSheet
     .getRange(newRow, formResponses.columnNumbers.queueEmails)
-    .setDataValidation(rule);
+    .setDataValidation(checkboxRule);
+
+  //add checkboxes for math teacher, la teacher, and principal rec completion columns
+
+  formResponsesSheet
+  .getRange(newRow, formResponses.columnNumbers.mathTeacher + 1)
+  .setDataValidation(checkboxRule);
+
+  formResponsesSheet
+  .getRange(newRow, formResponses.columnNumbers.laTeacher + 1)
+  .setDataValidation(checkboxRule);
+
+  formResponsesSheet
+  .getRange(newRow, formResponses.columnNumbers.principalRec + 1)
+  .setDataValidation(checkboxRule);
 
   //add query formula for parent contact emails to 'Form Responses 1'
   const studentName = formResponsesSheet
@@ -287,3 +302,69 @@ function markCompletion(e) {
     recommendationEntry.setBackground(null);
   }
 }
+
+// function markCompletion(e) {
+//   // When a recommendation is checked off as complete on any teacher's sheet, find the corresponding entry in 'Form Responses 1' and make that cell green.
+//   // Reset the cell background if a recommendation is unchecked
+//   // This function runs EVERY TIME the spreadsheet is edited by a user, but checks where the edit was made before doing anything
+
+//   const currentSheet = ss.getActiveSheet(); //the sheet currently being edited
+//   const range = e.range; //the cell that was edited (in this case, the date completed cell)
+
+//   //if the edit is not in column F or the edit is in the 'Form Responses 1' sheet, end the function
+//   //what about the other set-up tabs? FIX- this runs when I edit "Due Dates," for example
+//   if (
+//     range.getColumn() !== 6 ||
+//     currentSheet.getName() === "Form Responses 1"
+//   ) {
+//     Logger.log("outside range");
+//     return;
+//   }
+
+//   //set background of this recommendation line on the teacher's sheet to green
+//   const recommendationEntry = currentSheet.getRange(range.getRow(), 1, 1, 7);
+//   recommendationEntry.setBackground("#d9ead3");
+
+//   //get the universal unique id (Uuid) of the response (from column E, next to the date completed)
+//   const checkedUuid = currentSheet.getRange(e.range.getRow(), 5).getValue();
+
+//   //get name of sheet (tab) being edited - which teacher?
+//   const sheetName = currentSheet.getName();
+
+//   //get array of response Uuids in 'Form Responses 1' sheet
+//   const lastRow = formResponsesSheet.getLastRow(); //get the number of the last row with content
+//   const responseUuidArray = formResponsesSheet
+//     .getRange(1, formResponses.columnNumbers.uuId, lastRow)
+//     .getValues();
+
+//   //find the index of the response Uuid that matches the Uuid of the response checked off on the edited tab; add 1 to get the row number of that response (arrays are zero-indexed; ranges are not)
+//   const responseRow =
+//     responseUuidArray.findIndex((id) => id[0] === checkedUuid) + 1;
+
+//   const mathTeacherCell = formResponsesSheet.getRange(responseRow, formResponses.columnNumbers.mathTeacher) 
+//   const laTeacherCell = formResponsesSheet.getRange(responseRow, formResponses.columnNumbers.laTeacher)
+//   const principalRecCell = formResponsesSheet.getRange(responseRow, formResponses.columnNumbers.principalRec)  
+
+//   //get math teacher, la teacher, and principal rec cells from response row
+//   const teacherNameCells = [mathTeacherCell, laTeacherCell, principalRecCell]
+
+//   //get an array of the values (teacher names) from columns D:F of the response row
+//   const teacherNameCellValues = teacherNameCells.getValues()[0]; //ex: [JoMarie Broccoli (jbroccoli@nysmith.com), Emily Stephens (estephens@nysmith.com), No Supplemental Recommendation Required]
+
+//   //in teacherNameCellValues array, find the index of the teacher name that matches the edited tab; add 4 to get the correct column in 'Form Responses 1'
+//   //get this to throw an error and alert spreadsheet admins if not found? e.g. in case someone accidentally edited the tab names, which would break this function?
+//   const responseColumn =
+//     teacherNameCellValues.findIndex((entry) => entry.includes(sheetName)) + 4;
+
+//   //get the cell in 'Form Responses 1' that corresponds to the completed recommendation
+//   const cellToFormat = formResponsesSheet.getRange(responseRow, responseColumn);
+
+//   //if the date completed cell on the teacher sheet is filled out, change the background of the corresponding cell in 'Form Responses 1' to light green
+//   if (range.getValue()) {
+//     cellToFormat.setBackground("#d9ead3");
+//   } else {
+//     //if date completed is deleted, reset background on 'Form Responses 1' page and teacher sheet
+//     cellToFormat.setBackground(null);
+//     recommendationEntry.setBackground(null);
+//   }
+// }
