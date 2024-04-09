@@ -14,13 +14,14 @@ const formResponses = (() => {
     studentName: 2, //col B
     school: 3, //col C
     mathTeacher: 4, //col D
-    laTeacher: 5, //col E
-    principalRec: 6, //col F
-    uuId: 9, //col I
-    queueEmails: 10, //col J
-    emailsSent: 11, //col K
-    primaryContactEmail: 12, //col L
-    secondaryContactEmail: 13, //col M
+    laTeacher: 6, //col F
+    principalRec: 8, //col H
+    source: 10, //col J
+    uuId: 12, //col L
+    queueEmails: 13, //col M
+    emailsSent: 14, //col N
+    primaryContactEmail: 15, //col O
+    secondaryContactEmail: 16, //col P
   };
 
   const convertColNumstoLetters = () => {

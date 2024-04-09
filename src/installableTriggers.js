@@ -124,13 +124,16 @@ function createNewSheetsOnSubmit(e) {
         },
       };
 
+      const selectStatement = `${formResponses.columnLetters.timeStamp}, ${formResponses.columnLetters.studentName}, ${formResponses.columnLetters.school}, ${formResponses.columnLetters.source}, ${formResponses.columnLetters.uuId}`
+      const whereStatement = `${formResponses.columnLetters.mathTeacher}='${teacherCellValues[i]}' or ${formResponses.columnLetters.laTeacher}='${teacherCellValues[i]}' or ${formResponses.columnLetters.principalRec}='${teacherCellValues[i]}'`
+
       let queryFormula = {
         rows: [
           {
             values: [
               {
                 userEnteredValue: {
-                  formulaValue: `=iferror(query('Form Responses 1'!A2:I, "select A, B, C, G, I where D='${teacherCellValues[i]}' or E='${teacherCellValues[i]}' or F='${teacherCellValues[i]}'"), "")`,
+                  formulaValue: `=iferror(query('Form Responses 1'!${formResponses.columnLetters.timeStamp}2:${formResponses.columnLetters.uuId}, "select ${selectStatement} where ${whereStatement}"), "")`,
                 },
               },
             ],
@@ -257,13 +260,12 @@ function markCompletion(e) {
   const responseRow =
     responseUuidArray.findIndex((id) => id[0] === checkedUuid) + 1;
 
+  const mathTeacherCell = formResponsesSheet.getRange(responseRow, formResponses.columnNumbers.mathTeacher) 
+  const laTeacherCell = formResponsesSheet.getRange(responseRow, formResponses.columnNumbers.laTeacher)
+  const principalRecCell = formResponsesSheet.getRange(responseRow, formResponses.columnNumbers.principalRec)  
+
   //get math teacher, la teacher, and principal rec cells from response row
-  const teacherNameCells = formResponsesSheet.getRange(
-    responseRow,
-    formResponses.columnNumbers.mathTeacher,
-    1,
-    3
-  );
+  const teacherNameCells = [mathTeacherCell, laTeacherCell, principalRecCell]
 
   //get an array of the values (teacher names) from columns D:F of the response row
   const teacherNameCellValues = teacherNameCells.getValues()[0]; //ex: [JoMarie Broccoli (jbroccoli@nysmith.com), Emily Stephens (estephens@nysmith.com), No Supplemental Recommendation Required]
