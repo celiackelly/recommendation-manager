@@ -64,9 +64,9 @@ function createNewSheetsOnSubmit(e) {
   // get the cell values for the teacher submissions from 'Form Responses 1' sheet
   const teacherCellValues = formResponsesSheet
     .getRange(
-      `${formResponses.columnLetters.mathTeacher}${newRow}:${formResponses.columnLetters.supplementalTeacher}${newRow}`
+      `${formResponses.columnLetters.mathTeacher}${newRow}:${formResponses.columnLetters.principalRec}${newRow}`
     )
-    .getValues()[0]; //[mathTeacherCell, laTeacherCell, supplementalTeacherCell]
+    .getValues()[0]; //[mathTeacherCell, laTeacherCell, principalRecCell]
 
   //map teacherCellValues onto teacher names => 'jbroccoli'
   const teacherNames = teacherCellValues.map((value, i) => {
@@ -200,16 +200,15 @@ function addUuidAndEmailCheckbox(e) {
     newRow,
     formResponses.columnNumbers.laTeacher
   );
-  const supplementalTeacherCell = formResponsesSheet.getRange(
+  const principalRecCell = formResponsesSheet.getRange(
     newRow,
-    formResponses.columnNumbers.supplementalTeacher
+    formResponses.columnNumbers.principalRec
   );
-
   //array of submitted teacher cells (ranges, not values)
   const teacherCells = [
     mathTeacherCell,
-    laTeacherCell,
-    supplementalTeacherCell,
+    laTeacherCell, 
+    principalRecCell
   ];
 
   //if teacher cell value is empty (meaning it's for a public school and the form bypassed the Choose Recommenders section), replace with "No Recommendation Required- Public School"

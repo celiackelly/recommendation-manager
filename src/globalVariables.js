@@ -15,7 +15,7 @@ const formResponses = (() => {
     school: 3, //col C
     mathTeacher: 4, //col D
     laTeacher: 5, //col E
-    supplementalTeacher: 6, //col F; this will change to principalRec
+    principalRec: 6, //col F
     uuId: 9, //col I
     queueEmails: 10, //col J
     emailsSent: 11, //col K
