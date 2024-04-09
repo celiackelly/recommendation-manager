@@ -257,7 +257,7 @@ function markCompletion(e) {
   const responseRow =
     responseUuidArray.findIndex((id) => id[0] === checkedUuid) + 1;
 
-  //get math teacher, la teacher, and supplemental teacher cells from response row
+  //get math teacher, la teacher, and principal rec cells from response row
   const teacherNameCells = formResponsesSheet.getRange(
     responseRow,
     formResponses.columnNumbers.mathTeacher,
