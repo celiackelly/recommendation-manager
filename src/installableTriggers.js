@@ -66,7 +66,8 @@ function createNewSheetsOnSubmit(e) {
     .getRange(
       `${formResponses.columnLetters.mathTeacher}${newRow}:${formResponses.columnLetters.principalRec}${newRow}`
     )
-    .getValues()[0].filter(el => el); //[mathTeacherCell, laTeacherCell, principalRecCell]
+    .getValues()[0]
+    .filter((el) => el); //[mathTeacherCell, laTeacherCell, principalRecCell]
 
   //map teacherCellValues onto teacher names => 'jbroccoli'
   const teacherNames = teacherCellValues.map((value, i) => {
@@ -124,8 +125,8 @@ function createNewSheetsOnSubmit(e) {
         },
       };
 
-      const selectStatement = `${formResponses.columnLetters.timeStamp}, ${formResponses.columnLetters.studentName}, ${formResponses.columnLetters.school}, ${formResponses.columnLetters.source}, ${formResponses.columnLetters.uuId}`
-      const whereStatement = `${formResponses.columnLetters.mathTeacher}='${teacherCellValues[i]}' or ${formResponses.columnLetters.laTeacher}='${teacherCellValues[i]}' or ${formResponses.columnLetters.principalRec}='${teacherCellValues[i]}'`
+      const selectStatement = `${formResponses.columnLetters.timeStamp}, ${formResponses.columnLetters.studentName}, ${formResponses.columnLetters.school}, ${formResponses.columnLetters.source}, ${formResponses.columnLetters.uuId}`;
+      const whereStatement = `${formResponses.columnLetters.mathTeacher}='${teacherCellValues[i]}' or ${formResponses.columnLetters.laTeacher}='${teacherCellValues[i]}' or ${formResponses.columnLetters.principalRec}='${teacherCellValues[i]}'`;
 
       let queryFormula = {
         rows: [
@@ -188,16 +189,16 @@ function addUuidAndEmailCheckbox(e) {
   //add checkboxes for math teacher, la teacher, and principal rec completion columns
 
   formResponsesSheet
-  .getRange(newRow, formResponses.columnNumbers.mathTeacher + 1)
-  .setDataValidation(checkboxRule);
+    .getRange(newRow, formResponses.columnNumbers.mathTeacher + 1)
+    .setDataValidation(checkboxRule);
 
   formResponsesSheet
-  .getRange(newRow, formResponses.columnNumbers.laTeacher + 1)
-  .setDataValidation(checkboxRule);
+    .getRange(newRow, formResponses.columnNumbers.laTeacher + 1)
+    .setDataValidation(checkboxRule);
 
   formResponsesSheet
-  .getRange(newRow, formResponses.columnNumbers.principalRec + 1)
-  .setDataValidation(checkboxRule);
+    .getRange(newRow, formResponses.columnNumbers.principalRec + 1)
+    .setDataValidation(checkboxRule);
 
   //add query formula for parent contact emails to 'Form Responses 1'
   const studentName = formResponsesSheet
@@ -223,11 +224,7 @@ function addUuidAndEmailCheckbox(e) {
     formResponses.columnNumbers.principalRec
   );
   //array of submitted teacher cells (ranges, not values)
-  const teacherCells = [
-    mathTeacherCell,
-    laTeacherCell, 
-    principalRecCell
-  ];
+  const teacherCells = [mathTeacherCell, laTeacherCell, principalRecCell];
 
   //if teacher cell value is empty (meaning it's for a public school and the form bypassed the Choose Recommenders section), replace with "No Recommendation Required- Public School"
   teacherCells.forEach((cell) => {
@@ -238,18 +235,18 @@ function addUuidAndEmailCheckbox(e) {
 }
 
 function markCompletion(e) {
-  // When a recommendation is checked off as complete on any teacher's sheet, find the corresponding entry in 'Form Responses 1' and make that cell green.
+  // When a recommendation is checked off as complete on any teacher's sheet, find the corresponding entry in 'Form Responses 1' and check the checkbox.
   // Reset the cell background if a recommendation is unchecked
   // This function runs EVERY TIME the spreadsheet is edited by a user, but checks where the edit was made before doing anything
 
   const currentSheet = ss.getActiveSheet(); //the sheet currently being edited
   const range = e.range; //the cell that was edited (in this case, the date completed cell)
 
-  //if the edit is not in column F or the edit is in the 'Form Responses 1' sheet, end the function
-  //what about the other set-up tabs? FIX- this runs when I edit "Due Dates," for example
+  //if the edit is not in column F or the edit is in one of the admin sheets (not a teacher tab), end the function
+  const setupSheetsNames = ['Form Responses 1', 'Due Dates', 'Address Book', 'Template']
   if (
     range.getColumn() !== 6 ||
-    currentSheet.getName() === "Form Responses 1"
+    setupSheetsNames.includes(currentSheet.getName())
   ) {
     Logger.log("outside range");
     return;
@@ -275,12 +272,21 @@ function markCompletion(e) {
   const responseRow =
     responseUuidArray.findIndex((id) => id[0] === checkedUuid) + 1;
 
-  const mathTeacherCell = formResponsesSheet.getRange(responseRow, formResponses.columnNumbers.mathTeacher) 
-  const laTeacherCell = formResponsesSheet.getRange(responseRow, formResponses.columnNumbers.laTeacher)
-  const principalRecCell = formResponsesSheet.getRange(responseRow, formResponses.columnNumbers.principalRec)  
+  const mathTeacherCell = formResponsesSheet.getRange(
+    responseRow,
+    formResponses.columnNumbers.mathTeacher
+  );
+  const laTeacherCell = formResponsesSheet.getRange(
+    responseRow,
+    formResponses.columnNumbers.laTeacher
+  );
+  const principalRecCell = formResponsesSheet.getRange(
+    responseRow,
+    formResponses.columnNumbers.principalRec
+  );
 
   //get math teacher, la teacher, and principal rec cells from response row
-  const teacherNameCells = [mathTeacherCell, laTeacherCell, principalRecCell]
+  const teacherNameCells = [mathTeacherCell, laTeacherCell, principalRecCell];
 
   //get an array of the values (teacher names) from columns D:F of the response row
   const teacherNameCellValues = teacherNameCells.getValues()[0]; //ex: [JoMarie Broccoli (jbroccoli@nysmith.com), Emily Stephens (estephens@nysmith.com), No Supplemental Recommendation Required]
@@ -341,9 +347,9 @@ function markCompletion(e) {
 //   const responseRow =
 //     responseUuidArray.findIndex((id) => id[0] === checkedUuid) + 1;
 
-//   const mathTeacherCell = formResponsesSheet.getRange(responseRow, formResponses.columnNumbers.mathTeacher) 
+//   const mathTeacherCell = formResponsesSheet.getRange(responseRow, formResponses.columnNumbers.mathTeacher)
 //   const laTeacherCell = formResponsesSheet.getRange(responseRow, formResponses.columnNumbers.laTeacher)
-//   const principalRecCell = formResponsesSheet.getRange(responseRow, formResponses.columnNumbers.principalRec)  
+//   const principalRecCell = formResponsesSheet.getRange(responseRow, formResponses.columnNumbers.principalRec)
 
 //   //get math teacher, la teacher, and principal rec cells from response row
 //   const teacherNameCells = [mathTeacherCell, laTeacherCell, principalRecCell]
