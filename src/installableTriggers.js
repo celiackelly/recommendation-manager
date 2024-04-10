@@ -171,12 +171,12 @@ function addUuidAndEmailCheckbox(e) {
   //Also format recommendation cells and add completion checkboxes
 
   const newRow = e.range.getRow();
-  const formResponsesSheetId = formResponsesSheet.getSheetId()
+  const formResponsesSheetId = formResponsesSheet.getSheetId();
 
-  let requests = []
+  let requests = [];
 
-  //Generate a universal unique id (Uuid) for the response; create request to add to Form Responses 1 sheet  
-  const uuId = Utilities.getUuid() 
+  //Generate a universal unique id (Uuid) for the response; create request to add to Form Responses 1 sheet
+  const uuId = Utilities.getUuid();
   let uuIdRequest = {
     rows: [
       {
@@ -191,41 +191,41 @@ function addUuidAndEmailCheckbox(e) {
     ],
     fields: "userEnteredValue",
     range: {
-      sheetId: formResponsesSheetId,   
-      startRowIndex: newRow - 1,   //subtract one from all values, because this is an index, not a row/col in a range 
+      sheetId: formResponsesSheetId,
+      startRowIndex: newRow - 1, //subtract one from all values, because this is an index, not a row/col in a range
       endRowIndex: newRow,
-      startColumnIndex: formResponses.columnNumbers.uuId - 1,   
+      startColumnIndex: formResponses.columnNumbers.uuId - 1,
       endColumnIndex: formResponses.columnNumbers.uuId,
     },
-  };  
+  };
 
   //create request to add checkbox for queuing emails
   const checkboxRule = {
     condition: {
-      type: 'BOOLEAN',
-      values: []
+      type: "BOOLEAN",
+      values: [],
     },
-    inputMessage: "Please click the cell to check or uncheck the box.",
+    inputMessage: "Please click the cell to check or uncheck the box.", //is this necessary?
     strict: true,
-    showCustomUi: false
-  }
-  
+    showCustomUi: false,
+  };
+
   let queueEmailsCheckboxRequest = {
     range: {
       sheetId: formResponsesSheetId,
-      startRowIndex: newRow - 1,   //subtract one from all values, because this is an index, not a row/col in a range 
+      startRowIndex: newRow - 1, //subtract one from all values, because this is an index, not a row/col in a range
       endRowIndex: newRow,
-      startColumnIndex: formResponses.columnNumbers.queueEmails - 1,  //subtract one, because this is an index, not a row/col in a range 
+      startColumnIndex: formResponses.columnNumbers.queueEmails - 1, //subtract one, because this is an index, not a row/col in a range
       endColumnIndex: formResponses.columnNumbers.queueEmails,
     },
-      rule: checkboxRule
-  }
-  
+    rule: checkboxRule,
+  };
+
   const studentName = formResponsesSheet
     .getRange(newRow, formResponses.columnNumbers.studentName)
     .getValue();
 
-  let queryFormulaRequest = {       //this isn't working yet and i'm not sure why
+  let queryFormulaRequest = {
     rows: [
       {
         values: [
@@ -240,63 +240,108 @@ function addUuidAndEmailCheckbox(e) {
     fields: "userEnteredValue",
     range: {
       sheetId: formResponsesSheetId,
-      startRowIndex: newRow - 1,   //subtract one from all values, because this is an index, not a row/col in a range 
+      startRowIndex: newRow - 1, //subtract one from all values, because this is an index, not a row/col in a range
       endRowIndex: newRow,
-      startColumnIndex: formResponses.columnNumbers.primaryContactEmail - 1, 
+      startColumnIndex: formResponses.columnNumbers.primaryContactEmail - 1,
       endColumnIndex: formResponses.columnNumbers.primaryContactEmail,
     },
   };
 
+  //get the range for each teacher submission and recommendation completion checkoff column
+  const recommendationCellValues = formResponsesSheet
+    .getRange(newRow, formResponses.columnNumbers.mathTeacher, 1, 6)
+    .getValues()[0];
 
-  // //get the range for each teacher submission and recommendation completion checkoff column
-  // const recommendationCells = formResponsesSheet.getRange(
-  //   newRow,
-  //   formResponses.columnNumbers.mathTeacher, 
-  //   1, 
-  //   6
-  // )[0];
-  // const [mathTeacherCell, mathCompletionCell, laTeacherCell, laCompletionCell, principalRecCell, principalCompletionCell] = recommendationCells
+  //destructure the array
+  const [
+    mathTeacher,
+    mathCompletion,
+    laTeacher,
+    laCompletion,
+    principalRec,
+    principalCompletion,
+  ] = recommendationCellValues;
 
-  // //get the values for the recommendationCells range and destructure the array 
-  // const recommendationCellValues = recommendationCells.getValues()
-  // const [mathTeacher, mathCompletion, laTeacher, laCompletion, principalRec, principalCompletion] = recommendationCellValues
+  const teacherCellValues = [mathTeacher, laTeacher, principalRec]
 
-  // //array of submitted teacher cells (ranges, not values)
-  // const teacherCells = [mathTeacherCell, laTeacherCell, principalRecCell];
-  // const teacherCellValues = [mathTeacher, laTeacher, principalRec];
+  const isNotRequired = (recommendationValue) => {
+    if (recommendationValue === '' || recommendationValue === 'No' || recommendationValue === 'No Math Teacher Recommendation Required' || recommendationValue === 'No Language Arts Teacher Recommendation Required' || recommendationValue === 'No Recommendation Required- Public School') {
+      return true
+    } else  {
+      return false
+    }
+  }
 
-  // //array of completion cells (ranges, not values)
-  // const completionCells = [mathCompletionCell, laCompletionCell, principalCompletionCell]
+  // for math teacher, la teacher, and principal rec completion columns, if rec is not required, set completion cell value to 'n/a
+  for (let i = 0; i <= recommendationCellValues.length; i += 2) {      //iterate through teacher rec cells by skipping odd indices (the completion cells)
+    const teacherRec = recommendationCellValues[i]
 
-  // //if teacher cell value is empty (meaning it's for a public school and the form bypassed the Choose Recommenders section), replace with "No Recommendation Required- Public School"
+    if (isNotRequired(teacherRec)) {
+      let request = {
+        rows: [
+          {
+            values: [
+              {
+                userEnteredValue: {
+                  stringValue: 'n/a',
+                },
+              },
+            ],
+          },
+        ],
+        fields: "userEnteredValue",
+        range: {
+          sheetId: formResponsesSheetId,
+          startRowIndex: newRow - 1, //subtract one from all values, because this is an index, not a row/col in a range
+          endRowIndex: newRow,
+          startColumnIndex: formResponses.columnNumbers.mathTeacher + i,
+          endColumnIndex: formResponses.columnNumbers.mathTeacher + 1 + i,
+        },
+      };
+
+      requests.push(
+        { updateCells: request },
+      );
+
+    //otherwise add checkbox;
+    } else {
+      let checkboxRequest = {
+        range: {
+          sheetId: formResponsesSheetId,
+          startRowIndex: newRow - 1, //subtract one from all values, because this is an index, not a row/col in a range
+          endRowIndex: newRow,
+          startColumnIndex: formResponses.columnNumbers.mathTeacher + i,
+          endColumnIndex: formResponses.columnNumbers.mathTeacher + 1 + i,
+        },
+        rule: checkboxRule,
+      };
+
+      requests.push(
+        { setDataValidation: checkboxRequest })
+
+    }
+
+  }
+
+   // //if teacher cell value is empty (meaning it's for a public school and the form bypassed the Choose Recommenders section), replace with "No Recommendation Required- Public School"
   // teacherCells.forEach((cell, i) => {
   //   if (teacherCellValues[i] === "") {
   //     cell.setValue("No Recommendation Required- Public School");
   //   }
   // });
-  
-  // // for math teacher, la teacher, and principal rec completion columns, if rec is not required, set completion cell value to 'n/a'; otherwise add checkbox;
-  // completionCells.forEach((cell, i) => {
-  //   if (teacherCellValues[i] === "No" || teacherCellValues[i] === "No Recommendation Required- Public School") {
-  //     cell.setValue('n/a')
-  //   } else {
-  //     cell.setDataValidation(checkboxRule);
-  //   }  
-  // })
 
   requests.push(
-    { updateCells: uuIdRequest }, 
-    { setDataValidation: queueEmailsCheckboxRequest }, 
+    { updateCells: uuIdRequest },
+    { setDataValidation: queueEmailsCheckboxRequest },
     { updateCells: queryFormulaRequest }
   );
 
   //send all updates to Sheets API
   try {
     Sheets.Spreadsheets.batchUpdate({ requests: requests }, spreadsheetId);
-  } catch (err){
-    Logger.log(err)
+  } catch (err) {
+    Logger.log(err);
   }
-
 }
 
 // function addUuidAndEmailCheckbox(e) {      //not working because ranges aren't iterable at recommendationCells
@@ -333,13 +378,13 @@ function addUuidAndEmailCheckbox(e) {
 //   //get the range for each teacher submission and recommendation completion checkoff column
 //   const recommendationCells = formResponsesSheet.getRange(
 //     newRow,
-//     formResponses.columnNumbers.mathTeacher, 
-//     1, 
+//     formResponses.columnNumbers.mathTeacher,
+//     1,
 //     6
 //   )[0];
 //   const [mathTeacherCell, mathCompletionCell, laTeacherCell, laCompletionCell, principalRecCell, principalCompletionCell] = recommendationCells
 
-//   //get the values for the recommendationCells range and destructure the array 
+//   //get the values for the recommendationCells range and destructure the array
 //   const recommendationCellValues = recommendationCells.getValues()
 //   const [mathTeacher, mathCompletion, laTeacher, laCompletion, principalRec, principalCompletion] = recommendationCellValues
 
@@ -356,14 +401,14 @@ function addUuidAndEmailCheckbox(e) {
 //       cell.setValue("No Recommendation Required- Public School");
 //     }
 //   });
-  
+
 //   // for math teacher, la teacher, and principal rec completion columns, if rec is not required, set completion cell value to 'n/a'; otherwise add checkbox;
 //   completionCells.forEach((cell, i) => {
 //     if (teacherCellValues[i] === "No" || teacherCellValues[i] === "No Recommendation Required- Public School") {
 //       cell.setValue('n/a')
 //     } else {
 //       cell.setDataValidation(checkboxRule);
-//     }  
+//     }
 //   })
 // }
 
@@ -376,7 +421,12 @@ function markCompletion(e) {
   const range = e.range; //the cell that was edited (in this case, the date completed cell)
 
   //if the edit is not in column F or the edit is in one of the admin sheets (not a teacher tab), end the function
-  const setupSheetsNames = ['Form Responses 1', 'Due Dates', 'Address Book', 'Template']
+  const setupSheetsNames = [
+    "Form Responses 1",
+    "Due Dates",
+    "Address Book",
+    "Template",
+  ];
   if (
     range.getColumn() !== 6 ||
     setupSheetsNames.includes(currentSheet.getName())
@@ -401,20 +451,28 @@ function markCompletion(e) {
   const responseRow =
     responseUuidArray.findIndex((id) => id[0] === checkedUuid) + 1;
 
-  const recommendationCells = formResponsesSheet.getRange(responseRow, formResponses.columnNumbers.mathTeacher, 1, 6)  //range of the 3 teacher cells and their completion checkoff columns (6 columns total)
+  const recommendationCells = formResponsesSheet.getRange(
+    responseRow,
+    formResponses.columnNumbers.mathTeacher,
+    1,
+    6
+  ); //range of the 3 teacher cells and their completion checkoff columns (6 columns total)
 
   //get an array of the values (teacher names) from columns D:F of the response row
   const recommendationCellsValues = recommendationCells.getValues()[0]; //ex: [JoMarie Broccoli (jbroccoli@nysmith.com), Emily Stephens (estephens@nysmith.com), No Supplemental Recommendation Required]
 
   //in recommendationCellsValues array, find the index of the teacher name that matches the edited tab; add 5 to get the correct column in 'Form Responses 1'
   //get this to throw an error and alert spreadsheet admins if not found? e.g. in case someone accidentally edited the tab names, which would break this function?
-  const responseColumn = recommendationCellsValues.findIndex((entry) => typeof entry === 'string' && entry.includes(sheetName)) + 5;
+  const responseColumn =
+    recommendationCellsValues.findIndex(
+      (entry) => typeof entry === "string" && entry.includes(sheetName)
+    ) + 5;
 
   //get the cell in 'Form Responses 1' that corresponds to the completed recommendation
   const cellToFormat = formResponsesSheet.getRange(responseRow, responseColumn);
 
-  Logger.log(responseRow)
-  Logger.log(responseColumn)
+  Logger.log(responseRow);
+  Logger.log(responseColumn);
 
   //if the date completed cell on the teacher sheet is filled out, change the background of the corresponding cell in 'Form Responses 1' to light green
   if (range.getValue()) {
