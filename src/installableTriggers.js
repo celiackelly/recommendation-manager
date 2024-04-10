@@ -128,7 +128,7 @@ function createNewSheetsOnSubmit(e) {
       const selectStatement = `${formResponses.columnLetters.timeStamp}, ${formResponses.columnLetters.studentName}, ${formResponses.columnLetters.school}, ${formResponses.columnLetters.source}, ${formResponses.columnLetters.uuId}`;
       const whereStatement = `${formResponses.columnLetters.mathTeacher}='${teacherCellValues[i]}' or ${formResponses.columnLetters.laTeacher}='${teacherCellValues[i]}' or ${formResponses.columnLetters.principalRec}='${teacherCellValues[i]}'`;
 
-      let queryFormula = {
+      let queryFormulaRequest = {
         rows: [
           {
             values: [
@@ -153,7 +153,7 @@ function createNewSheetsOnSubmit(e) {
       requests.push(
         { addProtectedRange: { protectedRange: sheetProtection } },
         { addProtectedRange: { protectedRange: columnFGProtection } },
-        { updateCells: queryFormula }
+        { updateCells: queryFormulaRequest }
       );
     }
   });
@@ -219,18 +219,34 @@ function addUuidAndEmailCheckbox(e) {
       endColumnIndex: formResponses.columnNumbers.queueEmails,
     },
       rule: checkboxRule
-    }
+  }
   
+  const studentName = formResponsesSheet
+    .getRange(newRow, formResponses.columnNumbers.studentName)
+    .getValue();
 
-  // //add query formula for parent contact emails to 'Form Responses 1'
-  // const studentName = formResponsesSheet
-  //   .getRange(newRow, formResponses.columnNumbers.studentName)
-  //   .getValue();
-  // formResponsesSheet
-  //   .getRange(newRow, formResponses.columnNumbers.primaryContactEmail)
-  //   .setFormula(
-  //     `=iferror(query('Address Book'!A2:E, "SELECT C, E WHERE A='${studentName}' AND A IS NOT NULL", 0), "")`
-  //   );
+  let queryFormulaRequest = {       //this isn't working yet and i'm not sure why
+    rows: [
+      {
+        values: [
+          {
+            userEnteredValue: {
+              formulaValue: `=iferror(query('Address Book'!A2:E, "SELECT C, E WHERE A='${studentName}' AND A IS NOT NULL", 0), "")`,
+            },
+          },
+        ],
+      },
+    ],
+    fields: "userEnteredValue",
+    range: {
+      sheetId: formResponsesSheetId,
+      startRowIndex: newRow - 1,   //subtract one from all values, because this is an index, not a row/col in a range 
+      endRowIndex: newRow,
+      startColumnIndex: formResponses.columnNumbers.primaryContactEmail - 1, 
+      endColumnIndex: formResponses.columnNumbers.primaryContactEmail,
+    },
+  };
+
 
   // //get the range for each teacher submission and recommendation completion checkoff column
   // const recommendationCells = formResponsesSheet.getRange(
@@ -270,11 +286,16 @@ function addUuidAndEmailCheckbox(e) {
 
   requests.push(
     { updateCells: uuIdRequest }, 
-    { setDataValidation: queueEmailsCheckboxRequest}
+    { setDataValidation: queueEmailsCheckboxRequest }, 
+    { updateCells: queryFormulaRequest }
   );
 
   //send all updates to Sheets API
-  Sheets.Spreadsheets.batchUpdate({ requests: requests }, spreadsheetId);
+  try {
+    Sheets.Spreadsheets.batchUpdate({ requests: requests }, spreadsheetId);
+  } catch (err){
+    Logger.log(err)
+  }
 
 }
 
