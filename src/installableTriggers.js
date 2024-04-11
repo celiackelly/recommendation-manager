@@ -9,7 +9,7 @@ function createTriggers() {
     .onFormSubmit()
     .create();
 
-  ScriptApp.newTrigger("addUuidAndEmailCheckbox")
+  ScriptApp.newTrigger("formatResponseRow")
     .forSpreadsheet(ss)
     .onFormSubmit()
     .create();
@@ -166,7 +166,7 @@ function createNewSheetsOnSubmit(e) {
 }
 
 //this could be optimized with Sheets API; and should be broken up and renamed
-function addUuidAndEmailCheckbox(e) {
+function formatResponseRow(e) {
   //For each form submission, add universal unique id, a checkbox for queuing emails, and query formula to the response row in 'Form Responses 1' sheet
   //Also format recommendation cells and add completion checkboxes
 
@@ -265,7 +265,7 @@ function addUuidAndEmailCheckbox(e) {
   const teacherCellValues = [mathTeacher, laTeacher, principalRec]
 
   const isNotRequired = (recommendationValue) => {
-    if (recommendationValue === '' || recommendationValue === 'No' || recommendationValue === 'No Math Teacher Recommendation Required' || recommendationValue === 'No Language Arts Teacher Recommendation Required' || recommendationValue === 'No Recommendation Required- Public School') {
+    if (!recommendationValue || recommendationValue === 'No' || recommendationValue === 'No Math Teacher Recommendation Required' || recommendationValue === 'No Language Arts Teacher Recommendation Required') {
       return true
     } else  {
       return false
@@ -305,6 +305,7 @@ function addUuidAndEmailCheckbox(e) {
 
     //otherwise add checkbox;
     } else {
+      Logger.log(teacherRec)
       let checkboxRequest = {
         range: {
           sheetId: formResponsesSheetId,
@@ -324,11 +325,36 @@ function addUuidAndEmailCheckbox(e) {
   }
 
    // //if teacher cell value is empty (meaning it's for a public school and the form bypassed the Choose Recommenders section), replace with "No Recommendation Required- Public School"
-  // teacherCells.forEach((cell, i) => {
-  //   if (teacherCellValues[i] === "") {
-  //     cell.setValue("No Recommendation Required- Public School");
-  //   }
-  // });
+   for (let i = 0; i <= recommendationCellValues.length; i += 2) {      //iterate through teacher rec cells by skipping odd indices (the completion cells)
+    const teacherRec = recommendationCellValues[i]
+    if (teacherRec === '') {
+      let request = {
+        rows: [
+          {
+            values: [
+              {
+                userEnteredValue: {
+                  stringValue: 'No Recommendation Required- Public School',
+                },
+              },
+            ],
+          },
+        ],
+        fields: "userEnteredValue",
+        range: {
+          sheetId: formResponsesSheetId,
+          startRowIndex: newRow - 1, //subtract one from all values, because this is an index, not a row/col in a range
+          endRowIndex: newRow,
+          startColumnIndex: formResponses.columnNumbers.mathTeacher - 1 + i,
+          endColumnIndex: formResponses.columnNumbers.mathTeacher + i,
+        },
+      };
+
+      requests.push(
+        { updateCells: request },
+      );
+    }
+  }
 
   requests.push(
     { updateCells: uuIdRequest },
@@ -336,12 +362,10 @@ function addUuidAndEmailCheckbox(e) {
     { updateCells: queryFormulaRequest }
   );
 
+  Logger.log(requests)
+
   //send all updates to Sheets API
-  try {
-    Sheets.Spreadsheets.batchUpdate({ requests: requests }, spreadsheetId);
-  } catch (err) {
-    Logger.log(err);
-  }
+  Sheets.Spreadsheets.batchUpdate({ requests: requests }, spreadsheetId);
 }
 
 // function addUuidAndEmailCheckbox(e) {      //not working because ranges aren't iterable at recommendationCells
