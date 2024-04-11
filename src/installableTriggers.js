@@ -175,6 +175,18 @@ function formatResponseRow(e) {
 
   let requests = [];
 
+  //Remove any existing data validation in the new row. This is necessary because the sheet automatically copies down the checkboxes from the previous row into the new response row. 
+  let removeDataValidationRequest = {
+    range: {
+      sheetId: formResponsesSheetId,
+      startRowIndex: newRow - 1, //subtract one from all values, because this is an index, not a row/col in a range
+      endRowIndex: newRow,
+    },
+  };
+
+  requests.push(
+    { setDataValidation: removeDataValidationRequest })
+
   //Generate a universal unique id (Uuid) for the response; create request to add to Form Responses 1 sheet
   const uuId = Utilities.getUuid();
   let uuIdRequest = {
@@ -275,9 +287,10 @@ function formatResponseRow(e) {
   // for math teacher, la teacher, and principal rec completion columns, if rec is not required, set completion cell value to 'n/a
   for (let i = 0; i < recommendationCellValues.length; i += 2) {      //iterate through teacher rec cells by skipping odd indices (the completion cells)
     const teacherRec = recommendationCellValues[i]
-  Logger.log(i)
+    Logger.log(i)
 
     if (isNotRequired(teacherRec)) {
+      Logger.log('not required')
       let request = {
         rows: [
           {
@@ -318,8 +331,8 @@ function formatResponseRow(e) {
         rule: checkboxRule,
       };
 
-      // requests.push(
-      //   { setDataValidation: checkboxRequest })
+      requests.push(
+        { setDataValidation: checkboxRequest })
 
     }
 
@@ -351,17 +364,17 @@ function formatResponseRow(e) {
         },
       };
 
-      // requests.push(
-      //   { updateCells: request },
-      // );
+      requests.push(
+        { updateCells: request },
+      );
     }
   }
 
-  // requests.push(
-  //   { updateCells: uuIdRequest },
-  //   { setDataValidation: queueEmailsCheckboxRequest },
-  //   { updateCells: queryFormulaRequest }
-  // );
+  requests.push(
+    { updateCells: uuIdRequest },
+    { setDataValidation: queueEmailsCheckboxRequest },
+    { updateCells: queryFormulaRequest }
+  );
 
   Logger.log(requests)
 
