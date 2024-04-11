@@ -273,8 +273,9 @@ function formatResponseRow(e) {
   }
 
   // for math teacher, la teacher, and principal rec completion columns, if rec is not required, set completion cell value to 'n/a
-  for (let i = 0; i <= recommendationCellValues.length; i += 2) {      //iterate through teacher rec cells by skipping odd indices (the completion cells)
+  for (let i = 0; i < recommendationCellValues.length; i += 2) {      //iterate through teacher rec cells by skipping odd indices (the completion cells)
     const teacherRec = recommendationCellValues[i]
+  Logger.log(i)
 
     if (isNotRequired(teacherRec)) {
       let request = {
@@ -317,8 +318,8 @@ function formatResponseRow(e) {
         rule: checkboxRule,
       };
 
-      requests.push(
-        { setDataValidation: checkboxRequest })
+      // requests.push(
+      //   { setDataValidation: checkboxRequest })
 
     }
 
@@ -350,17 +351,17 @@ function formatResponseRow(e) {
         },
       };
 
-      requests.push(
-        { updateCells: request },
-      );
+      // requests.push(
+      //   { updateCells: request },
+      // );
     }
   }
 
-  requests.push(
-    { updateCells: uuIdRequest },
-    { setDataValidation: queueEmailsCheckboxRequest },
-    { updateCells: queryFormulaRequest }
-  );
+  // requests.push(
+  //   { updateCells: uuIdRequest },
+  //   { setDataValidation: queueEmailsCheckboxRequest },
+  //   { updateCells: queryFormulaRequest }
+  // );
 
   Logger.log(requests)
 
