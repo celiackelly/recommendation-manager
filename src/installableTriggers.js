@@ -175,7 +175,7 @@ function formatResponseRow(e) {
 
   let requests = [];
 
-  //Remove any existing data validation in the new row. This is necessary because the sheet automatically copies down the checkboxes from the previous row into the new response row. 
+  //Remove any existing data validation in the new row. This is necessary because the sheet automatically copies down the checkboxes from the previous row into the new response row.
   let removeDataValidationRequest = {
     range: {
       sheetId: formResponsesSheetId,
@@ -184,8 +184,7 @@ function formatResponseRow(e) {
     },
   };
 
-  requests.push(
-    { setDataValidation: removeDataValidationRequest })
+  requests.push({ setDataValidation: removeDataValidationRequest });
 
   //Generate a universal unique id (Uuid) for the response; create request to add to Form Responses 1 sheet
   const uuId = Utilities.getUuid();
@@ -274,30 +273,36 @@ function formatResponseRow(e) {
     principalCompletion,
   ] = recommendationCellValues;
 
-  const teacherCellValues = [mathTeacher, laTeacher, principalRec]
+  const teacherCellValues = [mathTeacher, laTeacher, principalRec];
 
   const isNotRequired = (recommendationValue) => {
-    if (!recommendationValue || recommendationValue === 'No' || recommendationValue === 'No Math Teacher Recommendation Required' || recommendationValue === 'No Language Arts Teacher Recommendation Required') {
-      return true
-    } else  {
-      return false
+    if (
+      !recommendationValue ||
+      recommendationValue === "No" ||
+      recommendationValue === "No Math Teacher Recommendation Required" ||
+      recommendationValue === "No Language Arts Teacher Recommendation Required"
+    ) {
+      return true;
+    } else {
+      return false;
     }
-  }
+  };
 
   // for math teacher, la teacher, and principal rec completion columns, if rec is not required, set completion cell value to 'n/a
-  for (let i = 0; i < recommendationCellValues.length; i += 2) {      //iterate through teacher rec cells by skipping odd indices (the completion cells)
-    const teacherRec = recommendationCellValues[i]
-    Logger.log(i)
+  for (let i = 0; i < recommendationCellValues.length; i += 2) {
+    //iterate through teacher rec cells by skipping odd indices (the completion cells)
+    const teacherRec = recommendationCellValues[i];
+    Logger.log(i);
 
     if (isNotRequired(teacherRec)) {
-      Logger.log('not required')
+      Logger.log("not required");
       let request = {
         rows: [
           {
             values: [
               {
                 userEnteredValue: {
-                  stringValue: 'n/a',
+                  stringValue: "n/a",
                 },
               },
             ],
@@ -313,13 +318,11 @@ function formatResponseRow(e) {
         },
       };
 
-      requests.push(
-        { updateCells: request },
-      );
+      requests.push({ updateCells: request });
 
-    //otherwise add checkbox;
+      //otherwise add checkbox;
     } else {
-      Logger.log(teacherRec)
+      Logger.log(teacherRec);
       let checkboxRequest = {
         range: {
           sheetId: formResponsesSheetId,
@@ -331,24 +334,22 @@ function formatResponseRow(e) {
         rule: checkboxRule,
       };
 
-      requests.push(
-        { setDataValidation: checkboxRequest })
-
+      requests.push({ setDataValidation: checkboxRequest });
     }
-
   }
 
-   // //if teacher cell value is empty (meaning it's for a public school and the form bypassed the Choose Recommenders section), replace with "No Recommendation Required- Public School"
-   for (let i = 0; i <= recommendationCellValues.length; i += 2) {      //iterate through teacher rec cells by skipping odd indices (the completion cells)
-    const teacherRec = recommendationCellValues[i]
-    if (teacherRec === '') {
+  // //if teacher cell value is empty (meaning it's for a public school and the form bypassed the Choose Recommenders section), replace with "No Recommendation Required- Public School"
+  for (let i = 0; i <= recommendationCellValues.length; i += 2) {
+    //iterate through teacher rec cells by skipping odd indices (the completion cells)
+    const teacherRec = recommendationCellValues[i];
+    if (teacherRec === "") {
       let request = {
         rows: [
           {
             values: [
               {
                 userEnteredValue: {
-                  stringValue: 'No Recommendation Required- Public School',
+                  stringValue: "No Recommendation Required- Public School",
                 },
               },
             ],
@@ -364,9 +365,7 @@ function formatResponseRow(e) {
         },
       };
 
-      requests.push(
-        { updateCells: request },
-      );
+      requests.push({ updateCells: request });
     }
   }
 
@@ -376,7 +375,7 @@ function formatResponseRow(e) {
     { updateCells: queryFormulaRequest }
   );
 
-  Logger.log(requests)
+  Logger.log(requests);
 
   //send all updates to Sheets API
   Sheets.Spreadsheets.batchUpdate({ requests: requests }, spreadsheetId);
