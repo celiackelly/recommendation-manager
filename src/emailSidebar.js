@@ -137,7 +137,6 @@ function sendEmails(queuedEmailInfo) {
 
       MailApp.sendEmail({
         to: emailInfo.parentEmails.join(","),
-        replyTo: "bschrembs@nysmith.com", //Emails will be sent from Celia's account, but if parents reply, the replies will default to Brian
         subject: `Completed Recommendation for ${emailInfo.studentName}`,
         body: `Dear Parents,\n\nAll the high school recommendations for ${template.studentFirstName} ${template.studentLastName} for ${template.school} have been completed. Please contact Brian Schrembs with any questions. \n\nSincerely, \nBrian Schrembs \nFaculty Coordinator for Student Outplacement \n13625 EDS Drive | Herndon, VA 20171 \noffice 703-713-3332 ext.1064 | fax 703-713-3336`,
         htmlBody: message,
