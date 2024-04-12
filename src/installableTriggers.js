@@ -165,30 +165,21 @@ function createNewSheetsOnSubmit(e) {
   sortSheetsAlphabetically();
 }
 
-//this could be optimized with Sheets API; and should be broken up and renamed
-function formatResponseRow(e) {
-  //For each form submission, add universal unique id, a checkbox for queuing emails, and query formula to the response row in 'Form Responses 1' sheet
-  //Also format recommendation cells and add completion checkboxes
-
-  const newRow = e.range.getRow();
-  const formResponsesSheetId = formResponsesSheet.getSheetId();
-
-  let requests = [];
-
-  //Remove any existing data validation in the new row. This is necessary because the sheet automatically copies down the checkboxes from the previous row into the new response row.
+function createRemoveDataValidationRequest(sheetId, row) {
+  //Create request to remove any existing data validation in the new row. This is necessary because the sheet automatically copies down the checkboxes from the previous row into the new response row.
   let removeDataValidationRequest = {
     range: {
-      sheetId: formResponsesSheetId,
-      startRowIndex: newRow - 1, //subtract one from all values, because this is an index, not a row/col in a range
-      endRowIndex: newRow,
+      sheetId: sheetId,
+      startRowIndex: row - 1, //subtract one from all values, because this is an index, not a row/col in a range
+      endRowIndex: row,
     },
   };
+  return { setDataValidation: removeDataValidationRequest };
+}
 
-  requests.push({ setDataValidation: removeDataValidationRequest });
-
-  //Generate a universal unique id (Uuid) for the response; create request to add to Form Responses 1 sheet
+function createAddUuidRequest(sheetId, row) {
   const uuId = Utilities.getUuid();
-  let uuIdRequest = {
+  let addUuIdRequest = {
     rows: [
       {
         values: [
@@ -202,38 +193,43 @@ function formatResponseRow(e) {
     ],
     fields: "userEnteredValue",
     range: {
-      sheetId: formResponsesSheetId,
-      startRowIndex: newRow - 1, //subtract one from all values, because this is an index, not a row/col in a range
-      endRowIndex: newRow,
+      sheetId: sheetId,
+      startRowIndex: row - 1, //subtract one from all values, because this is an index, not a row/col in a range
+      endRowIndex: row,
       startColumnIndex: formResponses.columnNumbers.uuId - 1,
       endColumnIndex: formResponses.columnNumbers.uuId,
     },
   };
+  return { updateCells: addUuIdRequest };
+}
 
-  //create request to add checkbox for queuing emails
+function createQueueEmailsCheckboxRequest(sheetId, row) {
   const checkboxRule = {
     condition: {
       type: "BOOLEAN",
       values: [],
     },
-    inputMessage: "Please click the cell to check or uncheck the box.", //is this necessary?
     strict: true,
     showCustomUi: false,
   };
 
   let queueEmailsCheckboxRequest = {
     range: {
-      sheetId: formResponsesSheetId,
-      startRowIndex: newRow - 1, //subtract one from all values, because this is an index, not a row/col in a range
-      endRowIndex: newRow,
+      sheetId: sheetId,
+      startRowIndex: row - 1, //subtract one from all values, because this is an index, not a row/col in a range
+      endRowIndex: row,
       startColumnIndex: formResponses.columnNumbers.queueEmails - 1, //subtract one, because this is an index, not a row/col in a range
       endColumnIndex: formResponses.columnNumbers.queueEmails,
     },
     rule: checkboxRule,
   };
 
+  return { setDataValidation: queueEmailsCheckboxRequest };
+}
+
+function createAddParentEmailsQueryRequest(sheetId, row) {
   const studentName = formResponsesSheet
-    .getRange(newRow, formResponses.columnNumbers.studentName)
+    .getRange(row, formResponses.columnNumbers.studentName)
     .getValue();
 
   let queryFormulaRequest = {
@@ -250,30 +246,23 @@ function formatResponseRow(e) {
     ],
     fields: "userEnteredValue",
     range: {
-      sheetId: formResponsesSheetId,
-      startRowIndex: newRow - 1, //subtract one from all values, because this is an index, not a row/col in a range
-      endRowIndex: newRow,
+      sheetId: sheetId,
+      startRowIndex: row - 1, //subtract one from all values, because this is an index, not a row/col in a range
+      endRowIndex: row,
       startColumnIndex: formResponses.columnNumbers.primaryContactEmail - 1,
       endColumnIndex: formResponses.columnNumbers.primaryContactEmail,
     },
   };
 
-  //get the range for each teacher submission and recommendation completion checkoff column
-  const recommendationCellValues = formResponsesSheet
-    .getRange(newRow, formResponses.columnNumbers.mathTeacher, 1, 6)
-    .getValues()[0];
+  return { updateCells: queryFormulaRequest };
+}
 
-  //destructure the array
-  const [
-    mathTeacher,
-    mathCompletion,
-    laTeacher,
-    laCompletion,
-    principalRec,
-    principalCompletion,
-  ] = recommendationCellValues;
-
-  const teacherCellValues = [mathTeacher, laTeacher, principalRec];
+function createAddRecommendationCheckboxesRequests(
+  sheetId,
+  row,
+  recommendationCellValues
+) {
+  let addRecommendationCheckboxesRequests = [];
 
   const isNotRequired = (recommendationValue) => {
     if (
@@ -292,7 +281,6 @@ function formatResponseRow(e) {
   for (let i = 0; i < recommendationCellValues.length; i += 2) {
     //iterate through teacher rec cells by skipping odd indices (the completion cells)
     const teacherRec = recommendationCellValues[i];
-    Logger.log(i);
 
     if (isNotRequired(teacherRec)) {
       Logger.log("not required");
@@ -310,35 +298,54 @@ function formatResponseRow(e) {
         ],
         fields: "userEnteredValue",
         range: {
-          sheetId: formResponsesSheetId,
-          startRowIndex: newRow - 1, //subtract one from all values, because this is an index, not a row/col in a range
-          endRowIndex: newRow,
+          sheetId: sheetId,
+          startRowIndex: row - 1, //subtract one from all values, because this is an index, not a row/col in a range
+          endRowIndex: row,
           startColumnIndex: formResponses.columnNumbers.mathTeacher + i,
           endColumnIndex: formResponses.columnNumbers.mathTeacher + 1 + i,
         },
       };
 
-      requests.push({ updateCells: request });
+      addRecommendationCheckboxesRequests.push({ updateCells: request });
 
       //otherwise add checkbox;
     } else {
       Logger.log(teacherRec);
+
+      const checkboxRule = {
+        condition: {
+          type: "BOOLEAN",
+          values: [],
+        },
+        strict: true,
+        showCustomUi: false,
+      };
+
       let checkboxRequest = {
         range: {
-          sheetId: formResponsesSheetId,
-          startRowIndex: newRow - 1, //subtract one from all values, because this is an index, not a row/col in a range
-          endRowIndex: newRow,
+          sheetId: sheetId,
+          startRowIndex: row - 1, //subtract one from all values, because this is an index, not a row/col in a range
+          endRowIndex: row,
           startColumnIndex: formResponses.columnNumbers.mathTeacher + i,
           endColumnIndex: formResponses.columnNumbers.mathTeacher + 1 + i,
         },
         rule: checkboxRule,
       };
 
-      requests.push({ setDataValidation: checkboxRequest });
+      addRecommendationCheckboxesRequests.push({
+        setDataValidation: checkboxRequest,
+      });
     }
   }
 
-  // //if teacher cell value is empty (meaning it's for a public school and the form bypassed the Choose Recommenders section), replace with "No Recommendation Required- Public School"
+  return addRecommendationCheckboxesRequests;
+}
+
+function createNoRecRequiredRequests(sheetId, row, recommendationCellValues) {
+  //if teacher cell value is empty (meaning it's for a public school and the form bypassed the Choose Recommenders section), replace with "No Recommendation Required- Public School"
+
+  let requests = [];
+
   for (let i = 0; i <= recommendationCellValues.length; i += 2) {
     //iterate through teacher rec cells by skipping odd indices (the completion cells)
     const teacherRec = recommendationCellValues[i];
@@ -357,9 +364,9 @@ function formatResponseRow(e) {
         ],
         fields: "userEnteredValue",
         range: {
-          sheetId: formResponsesSheetId,
-          startRowIndex: newRow - 1, //subtract one from all values, because this is an index, not a row/col in a range
-          endRowIndex: newRow,
+          sheetId: sheetId,
+          startRowIndex: row - 1, //subtract one from all values, because this is an index, not a row/col in a range
+          endRowIndex: row,
           startColumnIndex: formResponses.columnNumbers.mathTeacher - 1 + i,
           endColumnIndex: formResponses.columnNumbers.mathTeacher + i,
         },
@@ -369,13 +376,66 @@ function formatResponseRow(e) {
     }
   }
 
-  requests.push(
-    { updateCells: uuIdRequest },
-    { setDataValidation: queueEmailsCheckboxRequest },
-    { updateCells: queryFormulaRequest }
+  return requests;
+}
+
+function formatResponseRow(e) {
+  //For each form submission row, add universal unique id, a checkbox for queuing emails, query formula to the response row in 'Form Responses 1' sheet; format recommendation cells and add completion checkboxes
+
+  const newRow = e.range.getRow();
+  const formResponsesSheetId = formResponsesSheet.getSheetId();
+
+  let requests = [];
+
+  //Remove any existing data validation in the new row. This is necessary because the sheet automatically copies down the checkboxes from the previous row into the new response row.
+  const removeDataValidationRequest = createRemoveDataValidationRequest(
+    formResponsesSheetId,
+    newRow
   );
 
-  Logger.log(requests);
+  //Generate a universal unique id (Uuid) for the response; create request to add to Form Responses 1 sheet
+  const addUuidRequest = createAddUuidRequest(formResponsesSheetId, newRow);
+
+  //create request to add checkbox for queuing emails
+  const queueEmailsCheckboxRequest = createQueueEmailsCheckboxRequest(
+    formResponsesSheetId,
+    newRow
+  );
+
+  //create request to add query formula for parent emails from 'Address Book' tab
+  const addParentEmailsQueryRequest = createAddParentEmailsQueryRequest(
+    formResponsesSheetId,
+    newRow
+  );
+
+  //get the range for each teacher submission and recommendation completion checkoff column
+  const recommendationCellValues = formResponsesSheet
+    .getRange(newRow, formResponses.columnNumbers.mathTeacher, 1, 6)
+    .getValues()[0];
+
+  //create requests: for math teacher, la teacher, and principal rec completion columns, if rec is not required, set completion cell value to 'n/a; otherwise, add a checkbox for completion
+  const addRecommendationCheckboxesRequests =
+    createAddRecommendationCheckboxesRequests(
+      formResponsesSheetId,
+      newRow,
+      recommendationCellValues
+    );
+
+  //create requests: if teacher cell value is empty (meaning it's for a public school and the form bypassed the Choose Recommenders section), replace with "No Recommendation Required- Public School"
+  const noRecRequiredRequests = createNoRecRequiredRequests(
+    formResponsesSheetId,
+    newRow,
+    recommendationCellValues
+  );
+
+  requests.push(
+    removeDataValidationRequest,
+    addUuidRequest,
+    queueEmailsCheckboxRequest,
+    addParentEmailsQueryRequest,
+    ...addRecommendationCheckboxesRequests,
+    ...noRecRequiredRequests
+  );
 
   //send all updates to Sheets API
   Sheets.Spreadsheets.batchUpdate({ requests: requests }, spreadsheetId);
