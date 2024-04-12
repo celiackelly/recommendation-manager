@@ -401,7 +401,8 @@ function createAddDuplicatesQueryRequest(sheetId, row) {
       sheetId: sheetId,
       startRowIndex: row - 1, //subtract one from all values, because this is an index, not a row/col in a range
       endRowIndex: row,
-      startColumnIndex: formResponses.columnNumbers.findDuplicatesHelperQuery - 1,
+      startColumnIndex:
+        formResponses.columnNumbers.findDuplicatesHelperQuery - 1,
       endColumnIndex: formResponses.columnNumbers.findDuplicatesHelperQuery,
     },
   };
@@ -459,7 +460,10 @@ function formatResponseRow(e) {
   );
 
   // create request to add helper formula to column P, so that conditional formatting can highlight duplicates in red
-  const addDuplicatesQueryRequest = createAddDuplicatesQueryRequest(formResponsesSheetId, newRow)
+  const addDuplicatesQueryRequest = createAddDuplicatesQueryRequest(
+    formResponsesSheetId,
+    newRow
+  );
 
   requests.push(
     removeDataValidationRequest,
@@ -471,7 +475,7 @@ function formatResponseRow(e) {
     addDuplicatesQueryRequest
   );
 
-  Logger.log(requests)
+  Logger.log(requests);
 
   //send all updates to Sheets API
   Sheets.Spreadsheets.batchUpdate({ requests: requests }, spreadsheetId);

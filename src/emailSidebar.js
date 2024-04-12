@@ -95,7 +95,6 @@ function clearEmailQueue() {
 }
 
 function markEmailsSent(queuedEmailInfo) {
-
   //get array of response Uuids in 'Form Responses 1' sheet
   const lastRow = formResponsesSheet.getLastRow(); //get the number of the last row with content
   const responseUuidArray = formResponsesSheet
@@ -108,10 +107,10 @@ function markEmailsSent(queuedEmailInfo) {
     //find the index of the response Uuid that matches the Uuid of the response checked off on the edited tab; add 1 to get the row number of that response (arrays are zero-indexed; ranges are not)
     const responseRow = responseUuidArray.findIndex((id) => id[0] === uuId) + 1;
 
-    //In "Email Sent? column," mark this row as sent; colors of columns M and N will change based on conditional formatting set in the sheet 
+    //In "Email Sent? column," mark this row as sent; colors of columns M and N will change based on conditional formatting set in the sheet
     formResponsesSheet
       .getRange(responseRow, formResponses.columnNumbers.emailsSent)
-      .setValue("SENT")
+      .setValue("SENT");
   });
 }
 
@@ -167,7 +166,6 @@ async function handleSendEmails() {
     showEmailSidebar();
   }
 }
-
 
 // function sendEmails() {
 
