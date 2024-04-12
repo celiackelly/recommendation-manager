@@ -381,6 +381,34 @@ function createNoRecRequiredRequests(sheetId, row, recommendationCellValues) {
   return requests;
 }
 
+function createAddDuplicatesQueryRequest(sheetId, row) {
+  //add helper formula to column P, so that conditional formatting can highlight duplicates in red
+
+  let queryFormulaRequest = {
+    rows: [
+      {
+        values: [
+          {
+            userEnteredValue: {
+              formulaValue: `=B${row}&"- " &C${row}`,
+            },
+          },
+        ],
+      },
+    ],
+    fields: "userEnteredValue",
+    range: {
+      sheetId: sheetId,
+      startRowIndex: row - 1, //subtract one from all values, because this is an index, not a row/col in a range
+      endRowIndex: row,
+      startColumnIndex: formResponses.columnNumbers.findDuplicatesHelperQuery - 1,
+      endColumnIndex: formResponses.columnNumbers.findDuplicatesHelperQuery,
+    },
+  };
+
+  return { updateCells: queryFormulaRequest };
+}
+
 function formatResponseRow(e) {
   //For each form submission row, add universal unique id, a checkbox for queuing emails, query formula to the response row in 'Form Responses 1' sheet; format recommendation cells and add completion checkboxes
 
@@ -430,14 +458,20 @@ function formatResponseRow(e) {
     recommendationCellValues
   );
 
+  // create request to add helper formula to column P, so that conditional formatting can highlight duplicates in red
+  const addDuplicatesQueryRequest = createAddDuplicatesQueryRequest(formResponsesSheetId, newRow)
+
   requests.push(
     removeDataValidationRequest,
     addUuidRequest,
     queueEmailsCheckboxRequest,
     addParentEmailsQueryRequest,
     ...addRecommendationCheckboxesRequests,
-    ...noRecRequiredRequests
+    ...noRecRequiredRequests,
+    addDuplicatesQueryRequest
   );
+
+  Logger.log(requests)
 
   //send all updates to Sheets API
   Sheets.Spreadsheets.batchUpdate({ requests: requests }, spreadsheetId);

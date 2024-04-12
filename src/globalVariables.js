@@ -22,6 +22,7 @@ const formResponses = (() => {
     emailsSent: 14, //col N
     primaryContactEmail: 15, //col O
     secondaryContactEmail: 16, //col P
+    findDuplicatesHelperQuery: 19 //col S
   };
 
   const convertColNumstoLetters = () => {
