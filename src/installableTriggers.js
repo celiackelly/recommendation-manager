@@ -158,11 +158,13 @@ function createNewSheetsOnSubmit(e) {
     }
   });
 
-  //send all updates to Sheets API
-  Sheets.Spreadsheets.batchUpdate({ requests: requests }, spreadsheetId);
+  //if there are requests (meaning new teacher sheets have been created), send all update requests to Sheets API
+  if (requests.length > 0) {
+    Sheets.Spreadsheets.batchUpdate({ requests: requests }, spreadsheetId);
 
-  // sort the teacher sheets in alpha order, keeping the set-up sheets like 'Form Responses 1' at the front
-  sortSheetsAlphabetically();
+    // sort the teacher sheets in alpha order, keeping the set-up sheets like 'Form Responses 1' at the front
+    sortSheetsAlphabetically();
+  }
 }
 
 function createRemoveDataValidationRequest(sheetId, row) {
