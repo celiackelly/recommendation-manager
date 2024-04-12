@@ -94,11 +94,8 @@ function clearEmailQueue() {
   return [];
 }
 
-//if you update column structure, you must update this function. refactoring didn't work
 function markEmailsSent(queuedEmailInfo) {
-  //can you optimize this?
 
-  Logger.log(formResponses.columnNumbers.uuId);
   //get array of response Uuids in 'Form Responses 1' sheet
   const lastRow = formResponsesSheet.getLastRow(); //get the number of the last row with content
   const responseUuidArray = formResponsesSheet
@@ -111,16 +108,10 @@ function markEmailsSent(queuedEmailInfo) {
     //find the index of the response Uuid that matches the Uuid of the response checked off on the edited tab; add 1 to get the row number of that response (arrays are zero-indexed; ranges are not)
     const responseRow = responseUuidArray.findIndex((id) => id[0] === uuId) + 1;
 
-    //In "Email Sent? column," mark this row as sent and change background color to green
+    //In "Email Sent? column," mark this row as sent; colors of columns M and N will change based on conditional formatting set in the sheet 
     formResponsesSheet
       .getRange(responseRow, formResponses.columnNumbers.emailsSent)
       .setValue("SENT")
-      .setBackground("#d9ead3");
-
-    //change color of "Queue Email" checkbox column in this row to grey
-    formResponsesSheet
-      .getRange(responseRow, formResponses.columnNumbers.queueEmails)
-      .setBackground("#d9d9d9");
   });
 }
 
@@ -178,24 +169,6 @@ async function handleSendEmails() {
   }
 }
 
-// function markEmailSent(emailInfo) {
-//     const uuId = emailInfo.uuId
-//     Logger.log(uuId)
-
-//     //get array of response Uuids in 'Form Responses 1' sheet
-//     const lastRow = formResponsesSheet.getLastRow();  //get the number of the last row with content
-//     const responseUuidArray = formResponsesSheet.getRange(1, 9, lastRow).getValues()    // 9 = column I (uuid column)
-
-//     Logger.log(responseUuidArray)
-//     //find the index of the response Uuid that matches the Uuid of the response checked off on the edited tab; add 1 to get the row number of that response (arrays are zero-indexed; ranges are not)
-//     const responseRow = responseUuidArray.findIndex(id => id[0] === uuId) + 1
-//     Logger.log(responseRow)
-//     //In column K "Email Sent?," mark this row as sent and change background color to green
-//     formResponsesSheet.getRange(responseRow, 11).setValue("SENT").setBackground('#d9ead3')
-
-//     //change color of Column J in this row to grey
-//     formResponsesSheet.getRange(responseRow, 10).setBackground('#d9d9d9')
-// }
 
 // function sendEmails() {
 
