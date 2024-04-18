@@ -390,7 +390,7 @@ function createAddDuplicatesQueryRequest(sheetId, row) {
         values: [
           {
             userEnteredValue: {
-              formulaValue: `=B${row}&"- " &C${row}`,
+              formulaValue: `=${formResponses.columnLetters.studentName}${row}&"- " &${formResponses.columnLetters.school}${row}`,
             },
           },
         ],
