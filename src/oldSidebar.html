@@ -40,58 +40,58 @@
 
     <script>
       // The code in this function runs when the page is loaded.
-      document.addEventListener("DOMContentLoaded", () => {
-        google.script.run.withSuccessHandler(showEmailQueue).getEmailQueue();
-      });
+      document.addEventListener('DOMContentLoaded', () => {
+        google.script.run.withSuccessHandler(showEmailQueue).getEmailQueue()
+      })
 
       function showEmailQueue(queuedEmailInfo) {
-        let queue = document.getElementById("queue");
+        let queue = document.getElementById('queue')
 
-        let loadingRow = document.getElementById("loading-row");
+        let loadingRow = document.getElementById('loading-row')
 
         if (!queuedEmailInfo.length) {
-          let noDataMessage = document.createElement("td");
-          noDataMessage.innerText = "No emails have been added to the queue.";
-          queue.querySelector("tbody").replaceChild(noDataMessage, loadingRow);
-          return;
+          let noDataMessage = document.createElement('td')
+          noDataMessage.innerText = 'No emails have been added to the queue.'
+          queue.querySelector('tbody').replaceChild(noDataMessage, loadingRow)
+          return
         }
 
-        queue.querySelector("tbody").removeChild(loadingRow);
+        queue.querySelector('tbody').removeChild(loadingRow)
 
         queuedEmailInfo.forEach((info, i) => {
-          let row = document.createElement("tr");
+          let row = document.createElement('tr')
 
-          let studentCell = document.createElement("td");
-          studentCell.innerText = info.studentName;
-          let schoolCell = document.createElement("td");
-          schoolCell.innerText = info.school;
-          let parentEmailsCell = document.createElement("td");
-          parentEmailsCell.innerText = info.parentEmails.join("\n");
+          let studentCell = document.createElement('td')
+          studentCell.innerText = info.studentName
+          let schoolCell = document.createElement('td')
+          schoolCell.innerText = info.school
+          let parentEmailsCell = document.createElement('td')
+          parentEmailsCell.innerText = info.parentEmails.join('\n')
 
-          row.appendChild(studentCell);
-          row.appendChild(schoolCell);
-          row.appendChild(parentEmailsCell);
-          queue.appendChild(row);
-        });
+          row.appendChild(studentCell)
+          row.appendChild(schoolCell)
+          row.appendChild(parentEmailsCell)
+          queue.appendChild(row)
+        })
       }
 
       function disableButton(button) {
-        button.setAttribute("disabled", "disabled");
+        button.setAttribute('disabled', 'disabled')
       }
 
       function handleSendEmails() {
-        const sendEmailsButton = document.getElementById("send-emails-btn");
-        disableButton(sendEmailsButton);
+        const sendEmailsButton = document.getElementById('send-emails-btn')
+        disableButton(sendEmailsButton)
 
-        google.script.run.handleSendEmails();
+        google.script.run.handleSendEmails()
       }
 
       function handleClearEmailQueue() {
-        const clearQueueButton = document.getElementById("clear-queue-button");
-        disableButton(clearQueueButton);
+        const clearQueueButton = document.getElementById('clear-queue-button')
+        disableButton(clearQueueButton)
 
-        google.script.run.clearEmailQueue();
-        google.script.run.showEmailSidebar();
+        google.script.run.clearEmailQueue()
+        google.script.run.showEmailSidebar()
       }
     </script>
   </body>
