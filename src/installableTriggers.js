@@ -179,6 +179,30 @@ function createRemoveDataValidationRequest(sheetId, row) {
   return { setDataValidation: removeDataValidationRequest }
 }
 
+function createQueueDeletionCheckboxRequest(sheetId, row) {
+  const checkboxRule = {
+    condition: {
+      type: 'BOOLEAN',
+      values: [],
+    },
+    strict: true,
+    showCustomUi: false,
+  }
+
+  let queueDeletionCheckboxRequest = {
+    range: {
+      sheetId: sheetId,
+      startRowIndex: row - 1, //subtract one from all values, because this is an index, not a row/col in a range
+      endRowIndex: row,
+      startColumnIndex: formResponses.columnNumbers.deleteRecord - 1, //subtract one, because this is an index, not a row/col in a range
+      endColumnIndex: formResponses.columnNumbers.deleteRecord,
+    },
+    rule: checkboxRule,
+  }
+
+  return { setDataValidation: queueDeletionCheckboxRequest }
+}
+
 function createAddUuidRequest(sheetId, row) {
   const uuId = Utilities.getUuid()
   let addUuIdRequest = {
@@ -424,6 +448,12 @@ function formatResponseRow(e) {
     newRow,
   )
 
+    //create request to add checkbox for queuing emails
+    const queueDeletionCheckboxRequest = createQueueDeletionCheckboxRequest(
+      formResponsesSheetId,
+      newRow,
+    )
+
   //Generate a universal unique id (Uuid) for the response; create request to add to Form Responses 1 sheet
   const addUuidRequest = createAddUuidRequest(formResponsesSheetId, newRow)
 
@@ -468,6 +498,7 @@ function formatResponseRow(e) {
   requests.push(
     removeDataValidationRequest,
     addUuidRequest,
+    queueDeletionCheckboxRequest,
     queueEmailsCheckboxRequest,
     addParentEmailsQueryRequest,
     ...addRecommendationCheckboxesRequests,
