@@ -134,7 +134,7 @@ function createNewSheetsOnSubmit(e) {
             values: [
               {
                 userEnteredValue: {
-                  formulaValue: `=iferror(query('Form Responses 1'!${formResponses.columnLetters.timeStamp}2:${formResponses.columnLetters.uuId}, "select ${selectStatement} where ${whereStatement}"), "")`,
+                  formulaValue: `=iferror(query('Form Responses 1'!${formResponses.columnLetters.timeStamp}2:${formResponses.columnLetters.uuId}, "select ${selectStatement} where ${whereStatement}", 0), "")`,
                 },
               },
             ],
