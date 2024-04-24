@@ -530,12 +530,12 @@ function markCompletion(e) {
   //get an array of the values (teacher names) from columns D:F of the response row
   const recommendationCellsValues = recommendationCells.getValues()[0]; //ex: [JoMarie Broccoli (jbroccoli@nysmith.com), Emily Stephens (estephens@nysmith.com), No Supplemental Recommendation Required]
 
-  //in recommendationCellsValues array, find the index of the teacher name that matches the edited tab; add 5 to get the correct column in 'Form Responses 1'
+  //in recommendationCellsValues array, find the index of the teacher name that matches the edited tab; add formResponses.columnNumbers.mathTeacherCompletion to get the correct column in 'Form Responses 1'
   //get this to throw an error and alert spreadsheet admins if not found? e.g. in case someone accidentally edited the tab names, which would break this function?
   const responseColumn =
     recommendationCellsValues.findIndex(
-      (entry) => typeof entry === "string" && entry.includes(sheetName)
-    ) + 5;
+      entry => typeof entry === 'string' && entry.includes(sheetName),
+    ) + formResponses.columnNumbers.mathTeacherCompletion
 
   //get the cell in 'Form Responses 1' that corresponds to the completed recommendation
   const cellToFormat = formResponsesSheet.getRange(responseRow, responseColumn);

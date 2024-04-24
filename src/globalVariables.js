@@ -13,31 +13,38 @@ const formResponses = (() => {
     timeStamp: 1, //col A
     studentName: 2, 
     school: 3, 
-    mathTeacher: 4, 
-    laTeacher: 6, 
-    principalRec: 8, 
-    source: 10, 
-    uuId: 12, 
-    queueEmails: 13, 
-    emailsSent: 14, 
-    primaryContactEmail: 15, 
-    secondaryContactEmail: 18, 
-    findDuplicatesHelperQuery: 19,
-  };
+    source: 4,
+    uuId: 5,
+    dateCompleted: 6,
+    notes: 7,
+  }
 
   const convertColNumstoLetters = () => {
-    const columnLetters = {};
+    const columnLetters = {}
 
     for (let column in columnNumbers) {
-      columnLetters[column] = String.fromCharCode(columnNumbers[column] + 64);
+      columnLetters[column] = String.fromCharCode(columnNumbers[column] + 64)
     }
-    return columnLetters;
-  };
+    return columnLetters
+  }
 
-  const columnLetters = convertColNumstoLetters();
+  const columnLetters = convertColNumstoLetters()
+
+  const converColNumsToIndex = () => {
+    const columnIndex = {}
+
+    for (let column in columnNumbers) {
+      columnIndex[column] = columnNumbers[column] - 1
+    }
+    return columnIndex
+  }
+
+  const columnIndex = converColNumsToIndex()
 
   return {
     columnNumbers,
     columnLetters,
-  };
-})();
+    columnIndex,
+  }
+})()
+
