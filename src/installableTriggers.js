@@ -192,10 +192,10 @@ function createQueueDeletionCheckboxRequest(sheetId, row) {
   let queueDeletionCheckboxRequest = {
     range: {
       sheetId: sheetId,
-      startRowIndex: row - 1, //subtract one from all values, because this is an index, not a row/col in a range
+      startRowIndex: row - 1, //subtract one because this is an index, not a row/col in a range
       endRowIndex: row,
-      startColumnIndex: formResponses.columnNumbers.deleteRecord - 1, //subtract one, because this is an index, not a row/col in a range
-      endColumnIndex: formResponses.columnNumbers.deleteRecord,
+      startColumnIndex: formResponses.columnIndex.deleteRecord, 
+      endColumnIndex: formResponses.columnIndex.deleteRecord + 1,
     },
     rule: checkboxRule,
   }
@@ -222,8 +222,8 @@ function createAddUuidRequest(sheetId, row) {
       sheetId: sheetId,
       startRowIndex: row - 1, //subtract one from all values, because this is an index, not a row/col in a range
       endRowIndex: row,
-      startColumnIndex: formResponses.columnNumbers.uuId - 1,
-      endColumnIndex: formResponses.columnNumbers.uuId,
+      startColumnIndex: formResponses.columnIndex.uuId,
+      endColumnIndex: formResponses.columnIndex.uuId + 1,
     },
   }
   return { updateCells: addUuIdRequest }
@@ -244,8 +244,8 @@ function createQueueEmailsCheckboxRequest(sheetId, row) {
       sheetId: sheetId,
       startRowIndex: row - 1, //subtract one from all values, because this is an index, not a row/col in a range
       endRowIndex: row,
-      startColumnIndex: formResponses.columnNumbers.queueEmails - 1, //subtract one, because this is an index, not a row/col in a range
-      endColumnIndex: formResponses.columnNumbers.queueEmails,
+      startColumnIndex: formResponses.columnIndex.queueEmails, 
+      endColumnIndex: formResponses.columnIndex.queueEmails + 1,
     },
     rule: checkboxRule,
   }
@@ -275,8 +275,8 @@ function createAddParentEmailsQueryRequest(sheetId, row) {
       sheetId: sheetId,
       startRowIndex: row - 1, //subtract one from all values, because this is an index, not a row/col in a range
       endRowIndex: row,
-      startColumnIndex: formResponses.columnNumbers.primaryContactEmail - 1,
-      endColumnIndex: formResponses.columnNumbers.primaryContactEmail,
+      startColumnIndex: formResponses.columnIndex.primaryContactEmail,
+      endColumnIndex: formResponses.columnIndex.primaryContactEmail + 1,
     },
   }
 
@@ -327,8 +327,8 @@ function createAddRecommendationCheckboxesRequests(
           sheetId: sheetId,
           startRowIndex: row - 1, //subtract one from all values, because this is an index, not a row/col in a range
           endRowIndex: row,
-          startColumnIndex: formResponses.columnNumbers.mathTeacher + i,
-          endColumnIndex: formResponses.columnNumbers.mathTeacher + 1 + i,
+          startColumnIndex: formResponses.columnIndex.mathTeacherCompletion + i,
+          endColumnIndex: formResponses.columnIndex.mathTeacherCompletion + 1 + i,
         },
       }
 
@@ -352,8 +352,8 @@ function createAddRecommendationCheckboxesRequests(
           sheetId: sheetId,
           startRowIndex: row - 1, //subtract one from all values, because this is an index, not a row/col in a range
           endRowIndex: row,
-          startColumnIndex: formResponses.columnNumbers.mathTeacher + i,
-          endColumnIndex: formResponses.columnNumbers.mathTeacher + 1 + i,
+          startColumnIndex: formResponses.columnIndex.mathTeacherCompletion + i,
+          endColumnIndex: formResponses.columnIndex.mathTeacherCompletion + 1 + i,
         },
         rule: checkboxRule,
       }
@@ -393,8 +393,8 @@ function createNoRecRequiredRequests(sheetId, row, recommendationCellValues) {
           sheetId: sheetId,
           startRowIndex: row - 1, //subtract one from all values, because this is an index, not a row/col in a range
           endRowIndex: row,
-          startColumnIndex: formResponses.columnNumbers.mathTeacher - 1 + i,
-          endColumnIndex: formResponses.columnNumbers.mathTeacher + i,
+          startColumnIndex: formResponses.columnIndex.mathTeacher + i,
+          endColumnIndex: formResponses.columnIndex.mathTeacher + 2 + i,
         },
       }
 
@@ -426,8 +426,8 @@ function createAddDuplicatesQueryRequest(sheetId, row) {
       startRowIndex: row - 1, //subtract one from all values, because this is an index, not a row/col in a range
       endRowIndex: row,
       startColumnIndex:
-        formResponses.columnNumbers.findDuplicatesHelperQuery - 1,
-      endColumnIndex: formResponses.columnNumbers.findDuplicatesHelperQuery,
+        formResponses.columnIndex.findDuplicatesHelperQuery,
+      endColumnIndex: formResponses.columnIndex.findDuplicatesHelperQuery + 1,
     },
   }
 
