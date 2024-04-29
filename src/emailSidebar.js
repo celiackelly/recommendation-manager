@@ -37,9 +37,9 @@ function queueEmails() {
   try {
     const data = formResponsesSheet.getDataRange().getValues()
 
-    //filter just the rows with "Queue Emails" column checked (subtract 1 because arrays are zero-indexed)
+    //filter just the rows with "Queue Emails" column checked 
     const checkedRowsData = data.filter(
-      row => row[formResponses.columnNumbers.queueEmails - 1] === true,
+      row => row[formResponses.columnIndex.queueEmails] === true,
     )
 
     const emailsInfo = checkedRowsData.map(row => {
