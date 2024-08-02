@@ -25,8 +25,15 @@ function deleteRecord(record) {
       completionAndNotesCols.deleteCells(SpreadsheetApp.Dimension.ROWS);    //Deleting cells and not the whole row to avoid deleting the query formula in A2
     })
 
-    formResponsesSheet.deleteRow(record.position)   //Does this mess stuff up if you delete the first record in the sheet? (Check conditional formatting)
+    formResponsesSheet.deleteRow(record.position)  
 
+}
+
+function copyRecordToSheet(record, sheetName) {   
+  const sheet = ss.getSheetByName(sheetName)
+  const rowData = record.rowData
+  const blankRow = sheet.getRange(sheet.getLastRow() + 1, 1, 1, rowData.length)    
+  blankRow.setValues([rowData])
 }
 
 function deleteQueuedRecords() {
@@ -39,10 +46,15 @@ function deleteQueuedRecords() {
       position: i + 1,
       mathTeacher: row[formResponses.columnIndex.mathTeacher],
       laTeacher: row[formResponses.columnIndex.laTeacher],
-      principalRec: row[formResponses.columnIndex.principalRec]
+      principalRec: row[formResponses.columnIndex.principalRec],
+      rowData: row
     }))
     .filter(row => row.deleteRecord === true)
 
   Logger.log(queuedRecords)
-  queuedRecords.forEach(record => deleteRecord(record))
+  queuedRecords.forEach(record => {
+    Logger.log(record.rowData)
+    copyRecordToSheet(record, 'Deleted Requests')
+    deleteRecord(record)
+  })
 }
