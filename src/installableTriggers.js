@@ -336,7 +336,6 @@ function createAddRecommendationCheckboxesRequests(
 
       //otherwise add checkbox;
     } else {
-
       const checkboxRule = {
         condition: {
           type: 'BOOLEAN',
@@ -393,7 +392,7 @@ function createNoRecRequiredRequests(sheetId, row, recommendationCellValues) {
           startRowIndex: row - 1, //subtract one from all values, because this is an index, not a row/col in a range
           endRowIndex: row,
           startColumnIndex: formResponses.columnIndex.mathTeacher + i,
-          endColumnIndex: formResponses.columnIndex.mathTeacher + 2 + i,
+          endColumnIndex: formResponses.columnIndex.mathTeacher + 1 + i,
         },
       }
 
@@ -504,6 +503,8 @@ function formatResponseRow(e) {
     ...noRecRequiredRequests,
     addDuplicatesQueryRequest,
   )
+
+  Logger.log(requests)
 
   //send all updates to Sheets API
   Sheets.Spreadsheets.batchUpdate({ requests: requests }, spreadsheetId)
