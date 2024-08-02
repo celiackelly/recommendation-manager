@@ -27,6 +27,7 @@ function sortSheetsAlphabetically() {
       'Form Responses 1',
       'Due Dates',
       'Address Book',
+      'Deleted Requests',
       'Template',
     ]
     const index1 = sortOrder.indexOf(a)
