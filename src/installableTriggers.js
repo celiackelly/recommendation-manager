@@ -310,7 +310,6 @@ function createAddRecommendationCheckboxesRequests(
     const teacherRec = recommendationCellValues[i]
 
     if (isNotRequired(teacherRec)) {
-      Logger.log('not required')
       let request = {
         rows: [
           {
@@ -337,7 +336,6 @@ function createAddRecommendationCheckboxesRequests(
 
       //otherwise add checkbox;
     } else {
-      Logger.log(teacherRec)
 
       const checkboxRule = {
         condition: {
@@ -507,8 +505,6 @@ function formatResponseRow(e) {
     addDuplicatesQueryRequest,
   )
 
-  Logger.log(requests)
-
   //send all updates to Sheets API
   Sheets.Spreadsheets.batchUpdate({ requests: requests }, spreadsheetId)
 }
@@ -571,9 +567,6 @@ function markCompletion(e) {
 
   //get the cell in 'Form Responses 1' that corresponds to the completed recommendation
   const cellToFormat = formResponsesSheet.getRange(responseRow, responseColumn)
-
-  Logger.log(responseRow)
-  Logger.log(responseColumn)
 
   //if the date completed cell on the teacher sheet is filled out, change the background of the corresponding cell in 'Form Responses 1' to light green
   if (range.getValue()) {

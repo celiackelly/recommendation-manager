@@ -51,9 +51,7 @@ function deleteQueuedRecords() {
     }))
     .filter(row => row.deleteRecord === true)
 
-  Logger.log(queuedRecords)
   queuedRecords.forEach(record => {
-    Logger.log(record.rowData)
     copyRecordToSheet(record, 'Deleted Requests')
     deleteRecord(record)
   })

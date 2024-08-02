@@ -166,38 +166,3 @@ async function handleSendEmails() {
     showEmailSidebar()
   }
 }
-
-// function sendEmails() {
-
-//   try {
-//     const queuedEmailInfo = getEmailQueue()
-//     Logger.log(queuedEmailInfo)
-
-//     //if there are no queued emails, end the function
-//     if (!queuedEmailInfo) {
-//       throw new Error("There are no emails in the queue.")
-//     }
-
-//     //for each emailInfo object in the array/queue, send an email
-//     queuedEmailInfo.forEach(emailInfo => {
-//         MailApp.sendEmail({
-//           to: emailInfo.parentEmails.join(","),
-//           replyTo: 'bschrembs@nysmith.com',   //Emails will be sent from Celia's account, but if parents reply, the replies will default to Brian
-//           subject: `Completed Recommendation for ${emailInfo.studentName}`,
-//           body: `All the recommendations for ${emailInfo.studentName} for ${emailInfo.school} have been completed. Please contact Brian Schrembs with any questions.`
-//       })
-
-//       markEmailSent(emailInfo)
-//     })
-
-//     SpreadsheetApp.getUi().alert('Emails sent successfully.')
-//     clearEmailQueue()
-//     clearCheckboxes()
-
-//   } catch(err) {
-//       SpreadsheetApp.getUi().alert(`Error: ${err}`)
-//   }
-
-//   showEmailSidebar()
-
-// }
