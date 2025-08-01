@@ -137,7 +137,7 @@ function sendEmails(queuedEmailInfo) {
       MailApp.sendEmail({
         to: emailInfo.parentEmails.join(','),
         subject: `Completed Recommendation for ${emailInfo.studentName}`,
-        body: `Dear Parents,\n\nAll the high school recommendations for ${template.studentFirstName} ${template.studentLastName} for ${template.school} have been completed. Please contact Celia Kelly or Brian Schrembs with any questions. \n\nSincerely, \nCelia Kelly \nAdministrative Assistant \nRegistrar | Student Outplacement Coordinator \n13625 EDS Drive | Herndon, VA 20171 \noffice 703-713-3332 ext.1151 | fax 703-713-3336`,
+        body: `Dear Parents,\n\nAll the high school recommendations for ${template.studentFirstName} ${template.studentLastName} for ${template.school} have been completed. Please contact Celia Kelly or Brian Schrembs with any questions. \n\nSincerely, \nCelia Kelly \nOffice Administrator \nRegistrar | Student Outplacement Coordinator \n13625 EDS Drive | Herndon, VA 20171 \noffice 703-713-3332 ext.1009 | fax 703-713-3336`,
         htmlBody: message,
         inlineImages: emailImages,
       })
