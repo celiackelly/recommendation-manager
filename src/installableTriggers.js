@@ -55,6 +55,7 @@ function sortSheetsAlphabetically() {
 function createNewSheetsOnSubmit(e) {
   // Create new teacher tab from 'Template' on form submit, if no tab exists for that teacher
   // This version is refactored to use the Sheets API and batch the updates to the spreadsheet, to minimize function calls to Google services and speed up the run time
+  // Updated in Aug 2025 to include third teacher rec
 
   const sheetsArray = ss.getSheets() //get array of all sheets (tabs) in the spreadsheet
   const sheetNames = sheetsArray.map(sheet => sheet.getSheetName()) //map sheetsArray onto the name of each sheet (tab)
@@ -65,16 +66,16 @@ function createNewSheetsOnSubmit(e) {
   // get the cell values for the teacher submissions from 'Form Responses 1' sheet
   const teacherCellValues = formResponsesSheet
     .getRange(
-      `${formResponses.columnLetters.mathTeacher}${newRow}:${formResponses.columnLetters.principalRec}${newRow}`,
+      `${formResponses.columnLetters.mathTeacher}${newRow}:${formResponses.columnLetters.thirdTeacher}${newRow}`,
     )
     .getValues()[0]
-    .filter(el => el) //[mathTeacherCell, laTeacherCell, principalRecCell]
+    .filter(el => el) //[mathTeacherCell, laTeacherCell, principalRecCell, thirdTeacherCell] - filter out any empty cells
 
   //map teacherCellValues onto teacher names => 'jbroccoli'
   const teacherNames = teacherCellValues.map((value, i) => {
     const regex = /[A-Za-z.]*(?=@)/ //matches all alphanumeric characters that precede '@'
     // get teacher initial + last name from email in cell value; example: 'JoMarie Broccoli (jbroccoli@nysmith.com)' => 'jbroccoli'
-    return value.match(regex) ? value.match(regex)[0] : null
+    return value.match(regex) ? value.match(regex)[0] : null      // if no regex match, return null
   })
 
   let requests = []
@@ -127,7 +128,7 @@ function createNewSheetsOnSubmit(e) {
       }
 
       const selectStatement = `${formResponses.columnLetters.timeStamp}, ${formResponses.columnLetters.studentName}, ${formResponses.columnLetters.school}, ${formResponses.columnLetters.source}, ${formResponses.columnLetters.uuId}`
-      const whereStatement = `${formResponses.columnLetters.mathTeacher}='${teacherCellValues[i]}' or ${formResponses.columnLetters.laTeacher}='${teacherCellValues[i]}' or ${formResponses.columnLetters.principalRec}='${teacherCellValues[i]}'`
+      const whereStatement = `${formResponses.columnLetters.mathTeacher}='${teacherCellValues[i]}' or ${formResponses.columnLetters.laTeacher}='${teacherCellValues[i]}' or ${formResponses.columnLetters.principalRec}='${teacherCellValues[i]}' or ${formResponses.columnLetters.thirdTeacher}='${teacherCellValues[i]}'`
 
       let queryFormulaRequest = {
         rows: [
