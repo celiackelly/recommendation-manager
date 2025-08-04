@@ -11,8 +11,9 @@ function deleteRecord(record) {
     const mathTeacher = getTeacherName(record.mathTeacher)
     const laTeacher = getTeacherName(record.laTeacher)
     const principalRec = getTeacherName(record.principalRec)
+    const thirdTeacher = getTeacherName(record.thirdTeacherRec)
 
-    const teachers = [mathTeacher, laTeacher, principalRec].filter(el => el)  
+    const teachers = [mathTeacher, laTeacher, principalRec, thirdTeacher].filter(el => el)  
 
     //once you have it working, redo with Sheets API (queue changes to make at once, otherwise this will be very slow)
     //but be SURE that changes are applied in the right order- otherwise this could get really messy!
