@@ -471,10 +471,10 @@ function formatResponseRow(e) {
 
   //get the range for each teacher submission and recommendation completion checkoff column
   const recommendationCellValues = formResponsesSheet
-    .getRange(newRow, formResponses.columnNumbers.mathTeacher, 1, 6)
+    .getRange(newRow, formResponses.columnNumbers.mathTeacher, 1, 8)
     .getValues()[0]
 
-  //create requests: for math teacher, la teacher, and principal rec completion columns, if rec is not required, set completion cell value to 'n/a; otherwise, add a checkbox for completion
+  //create requests: for math teacher, la teacher, principal rec, adn third teacher completion columns, if rec is not required, set completion cell value to 'n/a; otherwise, add a checkbox for completion
   const addRecommendationCheckboxesRequests =
     createAddRecommendationCheckboxesRequests(
       formResponsesSheetId,
@@ -524,6 +524,9 @@ function markCompletion(e) {
   const setupSheetsNames = [
     'Form Responses 1',
     'Due Dates',
+    'Summary', 
+    'By School',
+    'Deleted Requests',
     'Address Book',
     'Template',
   ]
