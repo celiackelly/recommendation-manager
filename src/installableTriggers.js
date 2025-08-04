@@ -26,6 +26,8 @@ function sortSheetsAlphabetically() {
     const sortOrder = [
       'Form Responses 1',
       'Due Dates',
+      'Summary',
+      'By School',
       'Address Book',
       'Deleted Requests',
       'Template',
