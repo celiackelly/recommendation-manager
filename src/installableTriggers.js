@@ -300,7 +300,7 @@ function createAddRecommendationCheckboxesRequests(
       recommendationValue === 'No' ||
       recommendationValue === 'No Math Teacher Recommendation Required' ||
       recommendationValue === 'No Language Arts Teacher Recommendation Required' ||
-      recommendationValue === 'No Supplemental Teacher Recommendation Required'
+      recommendationValue === 'No Supplemental Recommendation Required'
     ) {
       return true
     } else {
