@@ -18,7 +18,7 @@ const formResponses = (() => {
     mathTeacherCompletion: 6,
     laTeacher: 7,
     principalRec: 9,
-    thirdTeacherRec: 11,
+    thirdTeacher: 11,
     source: 14,
     uuId: 16,
     queueEmails: 17,

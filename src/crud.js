@@ -11,7 +11,7 @@ function deleteRecord(record) {
     const mathTeacher = getTeacherName(record.mathTeacher)
     const laTeacher = getTeacherName(record.laTeacher)
     const principalRec = getTeacherName(record.principalRec)
-    const thirdTeacher = getTeacherName(record.thirdTeacherRec)
+    const thirdTeacher = getTeacherName(record.thirdTeacher)
 
     const teachers = [mathTeacher, laTeacher, principalRec, thirdTeacher].filter(el => el)  
 
@@ -48,6 +48,7 @@ function deleteQueuedRecords() {
       mathTeacher: row[formResponses.columnIndex.mathTeacher],
       laTeacher: row[formResponses.columnIndex.laTeacher],
       principalRec: row[formResponses.columnIndex.principalRec],
+      thirdTeacher: row[formResponses.columnIndex.thirdTeacher],
       rowData: row
     }))
     .filter(row => row.deleteRecord === true)
