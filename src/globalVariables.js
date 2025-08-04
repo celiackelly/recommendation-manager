@@ -18,13 +18,14 @@ const formResponses = (() => {
     mathTeacherCompletion: 6,
     laTeacher: 7,
     principalRec: 9,
-    source: 11,
-    uuId: 13,
-    queueEmails: 14,
-    emailsSent: 15,
-    primaryContactEmail: 16,
-    secondaryContactEmail: 17,
-    findDuplicatesHelperQuery: 20,
+    thirdTeacherRec: 11,
+    source: 14,
+    uuId: 16,
+    queueEmails: 17,
+    emailsSent: 18,
+    primaryContactEmail: 19,
+    secondaryContactEmail: 20,
+    findDuplicatesHelperQuery: 23,
   }
 
   const convertColNumstoLetters = () => {
