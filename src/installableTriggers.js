@@ -68,7 +68,7 @@ function createNewSheetsOnSubmit(e) {
   // get the cell values for the teacher submissions from 'Form Responses 1' sheet
   const teacherCellValues = formResponsesSheet
     .getRange(
-      `${formResponses.columnLetters.mathTeacher}${newRow}:${formResponses.columnLetters.supplementalTeacher}${newRow}`,
+      `${formResponses.columnLetters.mathTeacher}${newRow}:${formResponses.columnLetters.principalRec}${newRow}`,
     )
     .getValues()[0]
     .filter(el => el) //[mathTeacherCell, laTeacherCell, principalRecCell, supplementalTeacherCell] - filter out any empty cells
