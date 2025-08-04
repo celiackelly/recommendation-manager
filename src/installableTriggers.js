@@ -558,8 +558,8 @@ function markCompletion(e) {
     responseRow,
     formResponses.columnNumbers.mathTeacher,
     1,
-    6,
-  ) //range of the 3 teacher cells and their completion checkoff columns (6 columns total)
+    8,
+  ) //range of the 4 teacher cells and their completion checkoff columns (8 columns total)
 
   //get an array of the values (teacher names) from columns D:F of the response row
   const recommendationCellsValues = recommendationCells.getValues()[0] //ex: [JoMarie Broccoli (jbroccoli@nysmith.com), Emily Stephens (estephens@nysmith.com), No Supplemental Recommendation Required]
