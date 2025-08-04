@@ -57,7 +57,7 @@ function sortSheetsAlphabetically() {
 function createNewSheetsOnSubmit(e) {
   // Create new teacher tab from 'Template' on form submit, if no tab exists for that teacher
   // This version is refactored to use the Sheets API and batch the updates to the spreadsheet, to minimize function calls to Google services and speed up the run time
-  // Updated in Aug 2025 to include third teacher rec
+  // Updated in Aug 2025 to include supplemental teacher rec
 
   const sheetsArray = ss.getSheets() //get array of all sheets (tabs) in the spreadsheet
   const sheetNames = sheetsArray.map(sheet => sheet.getSheetName()) //map sheetsArray onto the name of each sheet (tab)
@@ -68,10 +68,10 @@ function createNewSheetsOnSubmit(e) {
   // get the cell values for the teacher submissions from 'Form Responses 1' sheet
   const teacherCellValues = formResponsesSheet
     .getRange(
-      `${formResponses.columnLetters.mathTeacher}${newRow}:${formResponses.columnLetters.thirdTeacher}${newRow}`,
+      `${formResponses.columnLetters.mathTeacher}${newRow}:${formResponses.columnLetters.supplementalTeacher}${newRow}`,
     )
     .getValues()[0]
-    .filter(el => el) //[mathTeacherCell, laTeacherCell, principalRecCell, thirdTeacherCell] - filter out any empty cells
+    .filter(el => el) //[mathTeacherCell, laTeacherCell, principalRecCell, supplementalTeacherCell] - filter out any empty cells
 
   //map teacherCellValues onto teacher names => 'jbroccoli'
   const teacherNames = teacherCellValues.map((value, i) => {
@@ -130,7 +130,7 @@ function createNewSheetsOnSubmit(e) {
       }
 
       const selectStatement = `${formResponses.columnLetters.timeStamp}, ${formResponses.columnLetters.studentName}, ${formResponses.columnLetters.school}, ${formResponses.columnLetters.source}, ${formResponses.columnLetters.uuId}`
-      const whereStatement = `${formResponses.columnLetters.mathTeacher}='${teacherCellValues[i]}' or ${formResponses.columnLetters.laTeacher}='${teacherCellValues[i]}' or ${formResponses.columnLetters.principalRec}='${teacherCellValues[i]}' or ${formResponses.columnLetters.thirdTeacher}='${teacherCellValues[i]}'`
+      const whereStatement = `${formResponses.columnLetters.mathTeacher}='${teacherCellValues[i]}' or ${formResponses.columnLetters.laTeacher}='${teacherCellValues[i]}' or ${formResponses.columnLetters.principalRec}='${teacherCellValues[i]}' or ${formResponses.columnLetters.supplementalTeacher}='${teacherCellValues[i]}'`
 
       let queryFormulaRequest = {
         rows: [
@@ -308,7 +308,7 @@ function createAddRecommendationCheckboxesRequests(
     }
   }
 
-  // for math teacher, la teacher, principal rec, and third teacher completion columns, if rec is not required, set completion cell value to 'n/a
+  // for math teacher, la teacher, supplemental teacher, and principal rec completion columns, if rec is not required, set completion cell value to 'n/a
   for (let i = 0; i < recommendationCellValues.length; i += 2) {
     //iterate through teacher rec cells by skipping odd indices (the completion cells)
     const teacherRec = recommendationCellValues[i]
@@ -476,7 +476,7 @@ function formatResponseRow(e) {
     .getRange(newRow, formResponses.columnNumbers.mathTeacher, 1, 8)
     .getValues()[0]
 
-  //create requests: for math teacher, la teacher, principal rec, adn third teacher completion columns, if rec is not required, set completion cell value to 'n/a; otherwise, add a checkbox for completion
+  //create requests: for math teacher, la teacher, supplemental teacher, and principal rec completion columns, if rec is not required, set completion cell value to 'n/a; otherwise, add a checkbox for completion
   const addRecommendationCheckboxesRequests =
     createAddRecommendationCheckboxesRequests(
       formResponsesSheetId,

@@ -10,10 +10,10 @@ function deleteRecord(record) {
 
     const mathTeacher = getTeacherName(record.mathTeacher)
     const laTeacher = getTeacherName(record.laTeacher)
+    const supplementalTeacher = getTeacherName(record.supplementalTeacher)
     const principalRec = getTeacherName(record.principalRec)
-    const thirdTeacher = getTeacherName(record.thirdTeacher)
 
-    const teachers = [mathTeacher, laTeacher, principalRec, thirdTeacher].filter(el => el)  
+    const teachers = [mathTeacher, laTeacher, supplementalTeacher, principalRec].filter(el => el)  
 
     //once you have it working, redo with Sheets API (queue changes to make at once, otherwise this will be very slow)
     //but be SURE that changes are applied in the right order- otherwise this could get really messy!
@@ -47,8 +47,8 @@ function deleteQueuedRecords() {
       position: i + 1,
       mathTeacher: row[formResponses.columnIndex.mathTeacher],
       laTeacher: row[formResponses.columnIndex.laTeacher],
+      supplementalTeacher: row[formResponses.columnIndex.supplementalTeacher],
       principalRec: row[formResponses.columnIndex.principalRec],
-      thirdTeacher: row[formResponses.columnIndex.thirdTeacher],
       rowData: row
     }))
     .filter(row => row.deleteRecord === true)
