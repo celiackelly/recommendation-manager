@@ -297,7 +297,8 @@ function createAddRecommendationCheckboxesRequests(
       !recommendationValue ||
       recommendationValue === 'No' ||
       recommendationValue === 'No Math Teacher Recommendation Required' ||
-      recommendationValue === 'No Language Arts Teacher Recommendation Required'
+      recommendationValue === 'No Language Arts Teacher Recommendation Required' ||
+      recommendationValue === 'No Third Teacher Recommendation Required'
     ) {
       return true
     } else {
@@ -305,7 +306,7 @@ function createAddRecommendationCheckboxesRequests(
     }
   }
 
-  // for math teacher, la teacher, and principal rec completion columns, if rec is not required, set completion cell value to 'n/a
+  // for math teacher, la teacher, principal rec, and third teacher completion columns, if rec is not required, set completion cell value to 'n/a
   for (let i = 0; i < recommendationCellValues.length; i += 2) {
     //iterate through teacher rec cells by skipping odd indices (the completion cells)
     const teacherRec = recommendationCellValues[i]
