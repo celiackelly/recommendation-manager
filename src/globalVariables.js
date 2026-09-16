@@ -11,21 +11,21 @@ const templateSheet = ss.getSheetByName('Template')
 const formResponses = (() => {
   const columnNumbers = {
     timeStamp: 1, //col A
-    deleteRecord: 2,
-    studentName: 3,
-    school: 4,
-    mathTeacher: 5,
-    mathTeacherCompletion: 6,
-    laTeacher: 7,
-    supplementalTeacher: 9,
-    principalRec: 11,
-    source: 14,
-    uuId: 16,
-    queueEmails: 17,
-    emailsSent: 18,
-    primaryContactEmail: 19,
-    secondaryContactEmail: 20,
-    findDuplicatesHelperQuery: 23,
+    deleteRecord: 2, //col B
+    studentName: 3, //col C
+    school: 4, //col D
+    mathTeacher: 5, //col E
+    mathTeacherCompletion: 6, //col F
+    laTeacher: 7, //col G
+    supplementalTeacher: 9, //col I
+    principalRec: 11, //col K
+    source: 14, //col N
+    uuId: 17, //col Q
+    queueEmails: 18, //col R
+    emailsSent: 19, //col S
+    primaryContactEmail: 20, //col T
+    secondaryContactEmail: 21, //col U
+    findDuplicatesHelperQuery: 24, //col X
   }
 
   const convertColNumstoLetters = () => {
