@@ -407,8 +407,56 @@ function createNoRecRequiredRequests(sheetId, row, recommendationCellValues) {
   return requests
 }
 
+function createAddPublicSchoolNameRequest(sheetId, row) {
+  //copy string value from 'Name of Public School' column to 'School' column in 'Form Responses 1' sheet, if the form submission is for a public school (meaning the 'Name of Public School' column is filled out and the 'School' column is empty)
+
+  //need to add the right conditional here and ensure that the formula is only added if the 'School' column is empty and the 'Name of Public School' column is filled out. Otherwise, it will overwrite the school name for private schools. Also need to ensure that the request is only pushed if there is one to push. Otherwise, it will throw an error when the batchUpdate is called.
+
+  let requests = []
+
+  const schoolCellValue = formResponsesSheet
+  .getRange(row, formResponses.columnNumbers.school)
+  .getValue()
+
+  const publicSchoolNameCellValue = formResponsesSheet
+  .getRange(row, formResponses.columnNumbers.publicSchoolName)
+  .getValue()
+
+  Logger.log(`schoolCellValue: ${schoolCellValue}`)
+  Logger.log(`publicSchoolNameCellValue: ${publicSchoolNameCellValue}`)
+
+  if (!schoolCellValue) {
+    let request = {
+    rows: [
+      {
+        values: [
+          {
+            userEnteredValue: {
+              stringValue: `${publicSchoolNameCellValue}`,
+            },
+          },
+        ],
+      },
+    ],
+    fields: 'userEnteredValue',
+    range: {
+      sheetId: sheetId,
+      startRowIndex: row - 1, //subtract one from all values, because this is an index, not a row/col in a range
+      endRowIndex: row,
+      startColumnIndex:
+        formResponses.columnIndex.school,
+      endColumnIndex: formResponses.columnIndex.school + 1,
+    },
+  }
+
+  requests.push({ updateCells: request })
+  }
+
+  return requests
+}
+
 function createAddDuplicatesQueryRequest(sheetId, row) {
-  //add helper formula to column P, so that conditional formatting can highlight duplicates in red
+  //add helper formula, so that conditional formatting can highlight duplicates in red
 
   let queryFormulaRequest = {
     rows: [
@@ -491,6 +539,12 @@ function formatResponseRow(e) {
     recommendationCellValues,
   )
 
+  //create requests: if school is a public school (meaning the 'Name of Public School' column is filled out and the 'School' column is empty), copy string value from 'Name of Public School' column to 'School' column in 'Form Responses 1' sheet
+  const addPublicSchoolNameRequest = createAddPublicSchoolNameRequest(
+    formResponsesSheetId,
+    newRow
+  )
+
   // create request to add helper formula to column P, so that conditional formatting can highlight duplicates in red
   const addDuplicatesQueryRequest = createAddDuplicatesQueryRequest(
     formResponsesSheetId,
@@ -505,6 +559,7 @@ function formatResponseRow(e) {
     addParentEmailsQueryRequest,
     ...addRecommendationCheckboxesRequests,
     ...noRecRequiredRequests,
+    ...addPublicSchoolNameRequest, 
     addDuplicatesQueryRequest,
   )
 
