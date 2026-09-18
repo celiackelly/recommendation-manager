@@ -21,7 +21,7 @@ const formResponses = (() => {
     supplementalTeacher: 10, //col J
     principalRec: 12, //col L
     source: 15, //col O
-    publicSchoolName: 18, //col R
+    publicSchoolName: 16, //col P
     uuId: 19, //col S
     queueEmails: 20, //col T
     emailsSent: 21, //col U
