@@ -13,19 +13,21 @@ const formResponses = (() => {
     timeStamp: 1, //col A
     deleteRecord: 2, //col B
     studentName: 3, //col C
-    school: 4, //col D
-    mathTeacher: 5, //col E
-    mathTeacherCompletion: 6, //col F
-    laTeacher: 7, //col G
-    supplementalTeacher: 9, //col I
-    principalRec: 11, //col K
-    source: 14, //col N
-    uuId: 17, //col Q
-    queueEmails: 18, //col R
-    emailsSent: 19, //col S
-    primaryContactEmail: 20, //col T
-    secondaryContactEmail: 21, //col U
-    findDuplicatesHelperQuery: 24, //col X
+    privateOrPublic: 4, //col D
+    school: 5, //col E
+    mathTeacher: 6, //col F
+    mathTeacherCompletion: 7, //col G
+    laTeacher: 8, //col H
+    supplementalTeacher: 10, //col J
+    principalRec: 12, //col L
+    source: 15, //col O
+    publicSchoolName: 18, //col R
+    uuId: 19, //col S
+    queueEmails: 20, //col T
+    emailsSent: 21, //col U
+    primaryContactEmail: 22, //col V
+    secondaryContactEmail: 23, //col W
+    findDuplicatesHelperQuery: 26, //col Z
   }
 
   const convertColNumstoLetters = () => {
