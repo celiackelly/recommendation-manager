@@ -577,7 +577,7 @@ function markCompletion(e) {
   const currentSheet = ss.getActiveSheet() //the sheet currently being edited
   const range = e.range //the cell that was edited (in this case, the date completed cell)
 
-  //if the edit is not in column F or the edit is in one of the admin sheets (not a teacher tab), end the function
+  //if the edit is not in the dateCompleted column or the edit is in one of the admin sheets (not a teacher tab), end the function
   const setupSheetsNames = [
     'Form Responses 1',
     'Due Dates',
@@ -588,14 +588,14 @@ function markCompletion(e) {
     'Template',
   ]
   if (
-    range.getColumn() !== 6 ||
+    range.getColumn() !== teacherTabs.columnNumbers.dateCompleted ||
     setupSheetsNames.includes(currentSheet.getName())
   ) {
     Logger.log('outside range')
     return
   }
 
-  //get the universal unique id (Uuid) of the response (from column E of the teacher tab, next to the date completed)
+  //get the universal unique id (Uuid) of the response (from column G of the teacher tab, next to the date completed)
   const checkedUuid = currentSheet.getRange(e.range.getRow(), teacherTabs.columnNumbers.uuId).getValue()
 
   //get name of sheet (tab) being edited - which teacher completed the rec?
