@@ -67,9 +67,11 @@ const teacherTabs = (() => {
     studentName: 2,
     school: 3,
     source: 4,
-    uuId: 5,
-    dateCompleted: 6,
-    notes: 7,
+    earlyDeadline: 5,
+    dueDate: 6,
+    uuId: 7,
+    dateCompleted: 8,
+    notes: 9,
   }
 
   const convertColNumstoLetters = () => {
