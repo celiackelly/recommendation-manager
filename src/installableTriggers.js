@@ -96,13 +96,13 @@ function createNewSheetsOnSubmit(e) {
         range: {
           sheetId: sheetId,
         },
-        description: 'Except for F:G, only Celia and Brian can edit the sheet',
+        description: 'Except for Date Completed and Notes, only Celia and Brian can edit the sheet',
         warningOnly: false,
         unprotectedRanges: [
           {
             sheetId: sheetId,
-            startColumnIndex: 5, //column F
-            endColumnIndex: 7, //column G, exclusive
+            startColumnIndex: teacherTabs.columnNumbers.dateCompleted - 1, //subtract one because here, column numbers are zero-indexed, but in the columnNumbers object, they are 1-indexed
+          endColumnIndex: teacherTabs.columnNumbers.notes, //don't subtract one here, because the endColumnIndex is exclusive, so it will protect the notes column but not the following blank column
           },
         ],
         editors: {
@@ -111,13 +111,13 @@ function createNewSheetsOnSubmit(e) {
         },
       }
 
-      let columnFGProtection = {
+      let columnProtectionForDateCompletedAndNotes = {
         range: {
           sheetId: sheetId,
-          startColumnIndex: 5, //column F
-          endColumnIndex: 7, //column G, exclusive
+          startColumnIndex: teacherTabs.columnNumbers.dateCompleted - 1, //subtract one because here, column numbers are zero-indexed, but in the columnNumbers object, they are 1-indexed
+          endColumnIndex: teacherTabs.columnNumbers.notes, //don't subtract one here, because the endColumnIndex is exclusive, so it will protect the notes column but not the following blank column
         },
-        description: `Only ${name}, Celia, and Brian can edit F:G`,
+        description: `Only ${name}, Celia, and Brian can edit Date Completed and Notes`,
         warningOnly: false,
         editors: {
           users: [
@@ -156,7 +156,7 @@ function createNewSheetsOnSubmit(e) {
 
       requests.push(
         { addProtectedRange: { protectedRange: sheetProtection } },
-        { addProtectedRange: { protectedRange: columnFGProtection } },
+        { addProtectedRange: { protectedRange: columnProtectionForDateCompletedAndNotes } },
         { updateCells: queryFormulaRequest },
       )
     }
