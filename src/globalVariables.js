@@ -22,13 +22,14 @@ const formResponses = (() => {
     principalRec: 12, //col L
     source: 14, //col N
     earlyDeadline: 15, //col O
-    publicSchoolName: 16, //col P
-    uuId: 19, //col S
-    queueEmails: 20, //col T
-    emailsSent: 21, //col U
-    primaryContactEmail: 22, //col V
-    secondaryContactEmail: 23, //col W
-    findDuplicatesHelperQuery: 26, //col Z
+    dueDate: 16, //col P
+    publicSchoolName: 17, //col Q
+    uuId: 20, //col T
+    queueEmails: 21, //col U
+    emailsSent: 22, //col V
+    primaryContactEmail: 23, //col W
+    secondaryContactEmail: 24, //col X
+    findDuplicatesHelperQuery: 27, //col AA
   }
 
   const convertColNumstoLetters = () => {
