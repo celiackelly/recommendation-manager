@@ -407,6 +407,33 @@ function createNoRecRequiredRequests(sheetId, row, recommendationCellValues) {
   return requests
 }
 
+function createAddDueDateRequest(sheetId, row) {
+
+  let queryFormulaRequest = {
+    rows: [
+      {
+        values: [
+          {
+            userEnteredValue: {
+              formulaValue: `=FILTER('Due Dates'!B:B, 'Due Dates'!A:A=${formResponses.columnLetters.school}${row})`,
+            },
+          },
+        ],
+      },
+    ],
+    fields: 'userEnteredValue',
+    range: {
+      sheetId: sheetId,
+      startRowIndex: row - 1, //subtract one from all values, because this is an index, not a row/col in a range
+      endRowIndex: row,
+      startColumnIndex: formResponses.columnIndex.dueDate,
+      endColumnIndex: formResponses.columnIndex.dueDate + 1,
+    },
+  }
+
+  return { updateCells: queryFormulaRequest }
+}
+
 function createAddPublicSchoolNameRequest(sheetId, row) {
   //copy string value from 'Name of Public School' column to 'School' column in 'Form Responses 1' sheet, if the form submission is for a public school (meaning the 'Name of Public School' column is filled out and the 'School' column is empty)
 
@@ -539,6 +566,12 @@ function formatResponseRow(e) {
     recommendationCellValues,
   )
 
+    //create request to add query formula for due date from 'Due Dates' tab
+  const addDueDateRequest = createAddDueDateRequest(
+    formResponsesSheetId,
+    newRow,
+  )
+
   //create requests: if school is a public school (meaning the 'Name of Public School' column is filled out and the 'School' column is empty), copy string value from 'Name of Public School' column to 'School' column in 'Form Responses 1' sheet
   const addPublicSchoolNameRequest = createAddPublicSchoolNameRequest(
     formResponsesSheetId,
@@ -559,6 +592,7 @@ function formatResponseRow(e) {
     addParentEmailsQueryRequest,
     ...addRecommendationCheckboxesRequests,
     ...noRecRequiredRequests,
+    addDueDateRequest, 
     ...addPublicSchoolNameRequest, 
     addDuplicatesQueryRequest,
   )
