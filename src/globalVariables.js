@@ -67,7 +67,7 @@ const teacherTabs = (() => {
     studentName: 2,
     school: 3,
     source: 4,
-    earlyDeadline: 5,
+    earlyDeadline: 5,   //early decision timeline
     dueDate: 6,
     uuId: 7,
     dateCompleted: 8,
