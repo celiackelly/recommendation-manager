@@ -129,7 +129,7 @@ function createNewSheetsOnSubmit(e) {
         },
       }
 
-      const selectStatement = `${formResponses.columnLetters.timeStamp}, ${formResponses.columnLetters.studentName}, ${formResponses.columnLetters.school}, ${formResponses.columnLetters.source}, ${formResponses.columnLetters.uuId}`
+      const selectStatement = `${formResponses.columnLetters.timeStamp}, ${formResponses.columnLetters.studentName}, ${formResponses.columnLetters.school}, ${formResponses.columnLetters.source}, ${formResponses.columnLetters.earlyDeadline}, ${formResponses.columnLetters.dueDate}, ${formResponses.columnLetters.uuId}`
       const whereStatement = `${formResponses.columnLetters.mathTeacher}='${teacherCellValues[i]}' or ${formResponses.columnLetters.laTeacher}='${teacherCellValues[i]}' or ${formResponses.columnLetters.principalRec}='${teacherCellValues[i]}' or ${formResponses.columnLetters.supplementalTeacher}='${teacherCellValues[i]}'`
 
       let queryFormulaRequest = {
