@@ -20,7 +20,8 @@ const formResponses = (() => {
     laTeacher: 8, //col H
     supplementalTeacher: 10, //col J
     principalRec: 12, //col L
-    source: 15, //col O
+    source: 14, //col N
+    earlyDeadline: 15, //col O
     publicSchoolName: 16, //col P
     uuId: 19, //col S
     queueEmails: 20, //col T
