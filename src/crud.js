@@ -3,7 +3,7 @@ function deleteRecord(record) {
 
     //map teacherCellValues onto teacher names => 'jbroccoli'
     const getTeacherName = (teacherCellValue) => {
-        const regex = /[A-Za-z.]*(?=@)/ //matches all alphanumeric characters that precede '@'
+        const regex = /[A-Za-z0-9._+-]+(?=@)/ //matches all alphanumeric characters that precede '@'
     // get teacher initial + last name from email in cell value; example: 'JoMarie Broccoli (jbroccoli@nysmith.com)' => 'jbroccoli'
     return teacherCellValue.match(regex) ? teacherCellValue.match(regex)[0] : null
   }
