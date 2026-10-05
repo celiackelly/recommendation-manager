@@ -15,6 +15,11 @@ function createTriggers() {
     .create()
 
   ScriptApp.newTrigger('markCompletion').forSpreadsheet(ss).onEdit().create()
+
+  ScriptApp.newTrigger('sendRecNotificationToTeachers')
+  .forSpreadsheet(ss)
+  .onFormSubmit()
+  .create()
 }
 
 function sortSheetsAlphabetically() {
@@ -672,4 +677,50 @@ function markCompletion(e) {
     //if date completed is deleted, reset background on 'Form Responses 1' page and teacher sheet
     cellToFormat.setValue(false)
   }
+}
+
+function sendRecNotificationToTeachers(e) {
+  //For each form submission, send a notification to the teachers who have received a recommendation request
+
+  //get the new row created by form submission
+  const newRow = e.range.getRow()
+
+  //get student name
+  const studentName = formResponsesSheet.getRange(newRow, formResponses.columnNumbers.studentName).getValue()
+
+  //get school
+  const school = formResponsesSheet.getRange(newRow, formResponses.columnNumbers.school).getValue()
+
+  //get recommendation spreadsheet URL
+  const spreadsheetURL = ss.getUrl()
+
+  // get the cell values for the teacher submissions from 'Form Responses 1' sheet
+  const teacherCellValues = formResponsesSheet
+    .getRange(
+      `${formResponses.columnLetters.mathTeacher}${newRow}:${formResponses.columnLetters.principalRec}${newRow}`,
+    )
+    .getValues()[0]
+    .filter(el => el) //[mathTeacherCell, laTeacherCell, principalRecCell, supplementalTeacherCell] - filter out any empty cells
+
+  // map teacherCellValues onto teacher emails
+  const teacherEmails = teacherCellValues.map((value, i) => {
+    const regex = /[A-Za-z0-9._+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/ //matches email addresses
+    return value.match(regex) ? value.match(regex)[0] : null      // if no regex match, return null
+  })
+
+  Logger.log(teacherEmails)
+
+  //send notification to teachers
+  teacherEmails.forEach(email => {
+    if (email) {
+      MailApp.sendEmail({
+        to: email,
+        subject: '8th High School Tracking Form Notification',
+        body: `You have received a recommendation request for ${studentName} for ${school}. Please check the Nysmith High School Tracking Form for details and deadlines.\n\nHigh School Tracking Form: ${spreadsheetURL}
+              \n\n This is an automated notification. If you have any questions, please contact Celia Kelly.`,
+      })
+    }
+  })
+
+
 }
