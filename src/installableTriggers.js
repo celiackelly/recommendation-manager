@@ -420,7 +420,7 @@ function createAddDueDateRequest(sheetId, row) {
         values: [
           {
             userEnteredValue: {
-              formulaValue: `=FILTER('Due Dates'!B:B, 'Due Dates'!A:A=${formResponses.columnLetters.school}${row})`,
+              formulaValue: `=IFERROR(FILTER('Due Dates'!B:B, 'Due Dates'!A:A=${formResponses.columnLetters.school}${row}), "n/a")`,
             },
           },
         ],
