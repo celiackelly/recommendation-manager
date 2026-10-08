@@ -15,11 +15,6 @@ function createTriggers() {
     .create()
 
   ScriptApp.newTrigger('markCompletion').forSpreadsheet(ss).onEdit().create()
-
-  ScriptApp.newTrigger('sendRecNotificationToTeachers')
-  .forSpreadsheet(ss)
-  .onFormSubmit()
-  .create()
 }
 
 function sortSheetsAlphabetically() {
