@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+  <head>
+    <base target="_top" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 16px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      input {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 16px;
+      }
+
+      #status {
+        margin-top: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <form id="teacher-form">
+      <label for="teacher-email">Teacher’s email address:</label>
+
+      <input
+        id="teacher-email"
+        type="email"
+        placeholder="ckelly@nysmith.com"
+        required
+      />
+
+      <button id="submit-button" type="submit">Create Teacher Tab</button>
+
+      <button type="button" onclick="google.script.host.close()">
+        Close
+      </button>
+    </form>
+
+    <p id="status" role="status"></p>
+
+    <script>
+      document.getElementById('teacher-form').addEventListener('submit', event => {
+        event.preventDefault()
+
+        const email = document.getElementById('teacher-email').value.trim()
+        const button = document.getElementById('submit-button')
+        const status = document.getElementById('status')
+
+        button.disabled = true
+        status.style.color = ''
+        status.textContent = 'Creating teacher tab...'
+
+        google.script.run
+          .withSuccessHandler(message => {
+            status.style.color = 'green'
+            status.textContent = message
+            button.disabled = false
+            document.getElementById('teacher-form').reset()
+          })
+          .withFailureHandler(error => {
+            status.style.color = 'red'
+            status.textContent = error.message
+            button.disabled = false
+          })
+          .createTeacherTabFromEmail(email)
+      })
+    </script>
+  </body>
+</html>

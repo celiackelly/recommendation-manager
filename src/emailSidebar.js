@@ -1,14 +1,5 @@
-//When the spreadsheet is opened, create a menu " Admin Controls" with a button to open the "Email Sidebar"
-//Add an event listener, so that when the 'Email Sidebar' button in the menu is clicked, the sidebar is shown
-//PROBLEM- I can't restrict access to this sidebar, can I? So anyone could send emails from here if they have domain edit access on the spreadsheet as a whole?
-//Maybe just display the queued emails in the sidebar, but still trigger them from the button on the speadsheet (so only Brian and I can trigger)
-//Not a problem- looks like the permissions on the sheet take care of this.
-function onOpen() {
-  SpreadsheetApp.getUi()
-    .createMenu('Admin Controls')
-    .addItem('Open Email Sidebar', 'showEmailSidebar')
-    .addToUi()
-}
+//Functions for managing the email sidebar and email queue
+// showEmailSidebar is called when the user clicks the "Open Email Sidebar" button in the "Admin Controls" menu. This menu is defined in createMenu.js
 
 //Render the HTML for the sidebar from the 'sidebar.html' template
 function doGet() {
