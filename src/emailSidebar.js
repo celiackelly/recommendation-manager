@@ -10,14 +10,14 @@ function onOpen() {
     .addToUi()
 }
 
-//Render the HTML for the sidebar from the 'sidebar.html' template
+//Render the HTML for the sidebar from the 'emailSidebar.html' template
 function doGet() {
-  const sidebar = HtmlService.createTemplateFromFile('sidebar.html')
+  const sidebar = HtmlService.createTemplateFromFile('emailSidebar.html')
   return sidebar.evaluate()
 }
 
 //Define an include() function, which lets you include another file in the HTML template
-//This function is called in the <head> of sidebar.html, to include the 'style.html' file when the HTML is rendered
+//This function is called in the <head> of emailSidebar.html, to include the 'style.html' file when the HTML is rendered
 //Separation of concerns in Google Apps Script: https://developers.google.com/apps-script/guides/html/best-practices#code.gs
 function include(filename) {
   return HtmlService.createHtmlOutputFromFile(filename).getContent()
